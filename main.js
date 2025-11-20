@@ -34,17 +34,17 @@ const context = canvas.getContext('webgpu'); // kontekst za risanje s WebGPU
 const format = navigator.gpu.getPreferredCanvasFormat();
 context.configure({ device, format });
 
-
-const vertices = new Float32Array([ // definirana so le unikatna oglisca - vertex buffer 
-    // positions         // colors         // index
-    -1, -1, -1,  1,      0,  0,  0,  1,    //   0
-    -1, -1,  1,  1,      0,  0,  1,  1,    //   1
-    -1,  1, -1,  1,      0,  1,  0,  1,    //   2
-    -1,  1,  1,  1,      0,  1,  1,  1,    //   3
-     1, -1, -1,  1,      1,  0,  0,  1,    //   4
-     1, -1,  1,  1,      1,  0,  1,  1,    //   5
-     1,  1, -1,  1,      1,  1,  0,  1,    //   6
-     1,  1,  1,  1,      1,  1,  1,  1,    //   7
+// definirana so le unikatna oglisca - vertex buffer
+const vertices = new Float32Array([
+    // positions         // texcoords
+    -1, -1, -1,  1,      0,  0,
+    -1, -1,  1,  1,      0,  1,
+    -1,  1, -1,  1,      1,  0,
+    -1,  1,  1,  1,      1,  1,
+     1, -1, -1,  1,      0,  0,
+     1, -1,  1,  1,      0,  1,
+     1,  1, -1,  1,      1,  0,
+     1,  1,  1,  1,      1,  1,
 ]);
 
 const indices = new Uint32Array([ // indeksi vertexov, pove kateri vertexi se zdruzujejo v trikotnike, negre v buffer, ker ne doloca vsebino podatkov
@@ -90,6 +90,33 @@ const depthTexture = device.createTexture({ // ustvarjanje globinske slike, urej
     usage: GPUTextureUsage.RENDER_ATTACHMENT,
 });
 
+// nalozimo sliko 
+const imageBitmap = await fetch('./assets/images/image.png') // pretvori v nestisnjeno obliko, ki je primerna za gpu
+    .then(response => response.blob())
+    .then(blob => createImageBitmap(blob));
+
+
+const texture = device.createTexture({ // ustvarimo teksturo primerne velikosti za sliko 
+    size: [imageBitmap.width, imageBitmap.height],
+    format: 'rgba8unorm',
+    usage:
+        GPUTextureUsage.TEXTURE_BINDING |
+        GPUTextureUsage.RENDER_ATTACHMENT |
+        GPUTextureUsage.COPY_DST,
+});
+
+device.queue.copyExternalImageToTexture( // iz cpu v gpu
+    { source: imageBitmap },
+    { texture },
+    [imageBitmap.width, imageBitmap.height]);
+
+
+const sampler = device.createSampler({// ustvarimo vzorcevalnik, saj bomo vzorcevali barvo iz slike -> v sencilnik fragmentov
+    minFilter: 'linear', // uporaba linearnega filtra
+    magFilter: 'linear',
+}); 
+
+
 
 // Fetch and compile shaders -> create moduls
 const code = await fetch('shader.wgsl').then(response => response.text()); // dobimo shaderje iz .wgsl
@@ -99,7 +126,7 @@ const module = device.createShaderModule({ code }); // iz shaderjev ustvari modu
 // opis medpomnilnika, ki vsebuje položaje oglišč in barv (2 atributa):
 
 const vertexBufferLayout = {
-    arrayStride: 32,
+    arrayStride: 24,
     attributes: [
         {
             shaderLocation: 0,
@@ -109,7 +136,7 @@ const vertexBufferLayout = {
         {
             shaderLocation: 1,
             offset: 16,
-            format: 'float32x4',
+            format: 'float32x2',
         },
     ],
 };
@@ -148,6 +175,8 @@ const bindGroup = device.createBindGroup({
     layout: pipeline.getBindGroupLayout(0),
     entries: [
         { binding: 0, resource: uniformBuffer },
+        { binding: 1, resource: texture.createView() },
+        { binding: 2, resource: sampler },
     ]
 });
 
