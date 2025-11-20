@@ -38,7 +38,7 @@ const colors = array<vec4f, 3>(
 struct VertexInput {
     // Shader je postal preprost in čist: prebere podatke iz bufferja, pozicionira oglišče.
 
-    @location(0) position: vec2f, // lokacija, kjer se v bufferju nahaja barva, glej obliko atributa! , kot prvih 8 bajtov je pozicija
+    @location(0) position: vec4f, // lokacija, kjer se v bufferju nahaja barva, glej obliko atributa! , kot prvih 8 bajtov je pozicija
     @location(1) color: vec4f, // drugih 8 bajtov je barva
 }
 
@@ -60,7 +60,8 @@ fn vertex(input: VertexInput) -> VertexOutput {
     var output: VertexOutput;
 
     //output.position = vec4(input.position, 0, 1); // vzame pozicijo in jo spremeni v 4D vektor [x,y,z,w]
-    output.position = matrix * vec4(input.position, 0, 1); // prispejemo translacijo
+    //output.position = matrix * vec4(input.position, 0, 1); // prispejemo translacijo
+    output.position = matrix * input.position;
     output.color = input.color; 
 
     return output; // poslje fragmet shaderju v pravi obliki
