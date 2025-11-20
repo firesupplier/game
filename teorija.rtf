@@ -1,0 +1,33 @@
+CPU:
+float array → positionBuffer (GPU)
+
+GPU:
+vertex shader bere positionBuffer
+fragment shader bere interpolirane vrednosti
+
+
+Animacija
+Kaj so uniforme?
+
+Uniforme so podatki, ki so skupni vsem vertexom ali fragmentom v enem draw klicu.
+Primer: pozicija, rotacija, skaliranje celotnega kvadrata, barva, svetlobni parametri.
+V nasprotju s “pravimi konstantami” se lahko spreminjajo med različnimi draw klici ali frame-i.
+Uniforme ne vsebujejo vsakega vertexa posebej, ampak en sam nabor vrednosti, ki ga shader uporabi za vse vertexe/fragmentne izračune.
+
+Primeri: premik objekta, rotacija, barva celotnega kvadrata, svetlobni parametri
+Uniforma ni del posameznega verteksa, ampak se pošlje shaderju kot celota.
+Uniforme se lahko spreminjajo frame za frame, zato omogočajo animacije.
+
+Shader definira uniformo z:
+
+@group(0) @binding(0) var<uniform> translation: vec2f;
+
+@group(0) → uniform pripada skupini 0 (bind group 0)
+@binding(0) → uniform ima številko vezave 0 znotraj te skupine
+Če bi imel še drugo uniformo v isti skupini, ji daš binding: 1.
+
+
+Ena bind group (skupina) lahko vsebuje več uniform bufferjev ali drugih virov.
+Vsak vir znotraj skupine ima svojo binding številko.
+
+glej bindgroupe /assets/images
