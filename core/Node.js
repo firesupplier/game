@@ -21,7 +21,7 @@ export class Node {
         }
     }
 
-    traverse(before, after) {
+    traverse(before, after) { // sprehajanje po hierarhiji
         before?.(this);
         for (const child of this.children) {
             child.traverse(before, after);
@@ -29,7 +29,7 @@ export class Node {
         after?.(this);
     }
 
-    linearize() {
+    linearize() { // razpihne hierarhijo v seznam, kjer lahko delamo z elementi seznama
         const array = [];
         this.traverse(node => array.push(node));
         return array;
@@ -47,7 +47,7 @@ export class Node {
         return this.linearize().map(transform);
     }
 
-    addComponent(component) {
+    addComponent(component) { // komponente - kamera, luc, fizika etc
         this.components.push(component);
     }
 

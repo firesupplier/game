@@ -1,5 +1,5 @@
 // Za enostavnejše delo s transformacijami, kjer so pisane funkcije za zdruzevanje matrik
-import { mat4 } from './gl-matrix-module.js';
+import { mat4 } from '../gl-matrix-module.js';
 import { Transform } from './Transform.js';
 import { Camera } from './Camera.js';
 
