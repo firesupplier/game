@@ -70,4 +70,9 @@ export class BaseRenderer {
         return gpuObjects;
     }
 
+    createShaderModule(code) {
+        return this.device.createShaderModule({ code });
+    }
+    
+
 }

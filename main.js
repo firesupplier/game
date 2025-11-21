@@ -13,6 +13,13 @@ const canvas = document.querySelector('canvas'); // keep this
 const renderer = new BaseRenderer(canvas);
 await renderer.initialize(); // creates context, device, format internally
 
+// Ustvari uniform buffer
+const uniformBuffer = renderer.device.createBuffer({
+    size: 16 * 4, // 4x4 matrika
+    usage: GPUBufferUsage.UNIFORM | GPUBufferUsage.COPY_DST,
+});
+
+
 // Depth texture
 let depthTexture = renderer.device.createTexture({
     size: [canvas.width, canvas.height],
@@ -57,24 +64,27 @@ const mesh = {
 const vertexBufferLayout = {
     arrayStride: 24,
     attributes: [
-        { shaderLocation: 0, offset: 0, format: 'float32x4' },
-        { shaderLocation: 1, offset: 16, format: 'float32x2' },
+        { shaderLocation: 0, offset: 0, format: 'float32x4', name: 'position' },
+        { shaderLocation: 1, offset: 16, format: 'float32x2', name: 'uv' },
     ]
 };
 
+// Load texture
+const imageBitmap = await fetch('./assets/images/image.png')
+    .then(r => r.blob())
+    .then(createImageBitmap);
+
+
 // bufferji ampak kot mesh iz rendererja
-const meshGPU = renderer.prepareMesh(mesh, vertexBufferLayout);
 const textureGPU = renderer.prepareImage(imageBitmap);
 const samplerGPU = renderer.prepareSampler({
     minFilter: 'linear',
     magFilter: 'linear',
 });
 
+const meshGPU = renderer.prepareMesh(mesh, vertexBufferLayout);
 
-// Load texture
-const imageBitmap = await fetch('./assets/images/image.png')
-    .then(r => r.blob())
-    .then(createImageBitmap);
+
 
 const texture = renderer.device.createTexture({
     size: [imageBitmap.width, imageBitmap.height],
@@ -85,15 +95,16 @@ renderer.device.queue.copyExternalImageToTexture({ source: imageBitmap }, { text
 
 const sampler = renderer.device.createSampler({ minFilter: 'linear', magFilter: 'linear' });
 
-// Shader module
+
+// fetch shader
 const shaderCode = await fetch('shader.wgsl').then(r => r.text());
-const shaderModule = renderer.createShaderModule({ code: shaderCode });
+const shaderModule = renderer.createShaderModule(shaderCode);
 
 
 // Pipeline
 const pipeline = renderer.device.createRenderPipeline({
     vertex: { module: shaderModule, entryPoint: 'vertex', buffers: [vertexBufferLayout] },
-    fragment: { module: shaderModule, entryPoint: 'fragment', targets: [{ format }] },
+    fragment: { module: shaderModule, entryPoint: 'fragment', targets: [{ format: renderer.format }] },
     depthStencil: { depthWriteEnabled: true, depthCompare: 'less', format: 'depth24plus' },
     layout: 'auto',
 });
@@ -142,9 +153,21 @@ const app = {
     render() {
         const encoder = renderer.device.createCommandEncoder();
         const pass = encoder.beginRenderPass({
-            colorAttachments: [{ view: context.getCurrentTexture().createView(), loadOp: 'clear', clearValue: [0.7,0.8,0.9,1], storeOp: 'store' }],
-            depthStencilAttachment: { view: depthTexture.createView(), depthClearValue: 1, depthLoadOp: 'clear', depthStoreOp: 'discard' }
+            colorAttachments: [{
+                view: renderer.context.getCurrentTexture().createView(),
+                loadOp: 'clear',
+                clearValue: [0.7, 0.8, 0.9, 1],
+                storeOp: 'store'
+            }],
+            depthStencilAttachment: {
+                view: depthTexture.createView(),
+                depthClearValue: 1,
+                depthLoadOp: 'clear',
+                depthStoreOp: 'discard'
+            }
+    
         });
+
         pass.setPipeline(pipeline);
         // pass.setVertexBuffer(0, vertexBuffer);
         // pass.setIndexBuffer(indexBuffer, 'uint32');
@@ -153,7 +176,8 @@ const app = {
 
         pass.setBindGroup(0, bindGroup);
         
-        pass.drawIndexed(indices.length);
+        pass.drawIndexed(mesh.indices.length);
+
         pass.end();
         renderer.device.queue.submit([encoder.finish()]);
     },
