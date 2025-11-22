@@ -1,5 +1,6 @@
 import { Mesh, Vertex } from '../core/core.js';
 
+
 export class OBJLoader {
 
     async load(url) {
@@ -57,7 +58,7 @@ export class OBJLoader {
                 vertices.push(new Vertex({
                     position: vData[vIndex],
                     normal: vnData[vnIndex],
-                    texcoords: vtData[vtIndex],
+                    texcoords: vtIndex !== undefined ? vtData[vtIndex] : [0,0],
                 }));
             }
         }

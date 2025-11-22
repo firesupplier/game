@@ -53,7 +53,19 @@ export class BaseRenderer {
             return this.gpuObjects.get(mesh);
         }
 
-        const vertexBufferArrayBuffer = createVertexBuffer(mesh.vertices, layout);
+        const flattenVertices = (vertices, layout) => {
+        const buffer = [];
+        for (const vertex of vertices) {
+            for (const attr of layout.attributes) {
+                buffer.push(...vertex[attr.name]);
+            }
+        }
+        return new Float32Array(buffer).buffer;
+        };
+
+        // Flatten vertices from objects to typed array
+        const vertexBufferArrayBuffer = flattenVertices(mesh.vertices, layout);
+
         const vertexBuffer = WebGPU.createBuffer(this.device, {
             data: vertexBufferArrayBuffer,
             usage: GPUBufferUsage.VERTEX,
@@ -64,6 +76,7 @@ export class BaseRenderer {
             data: indexBufferArrayBuffer,
             usage: GPUBufferUsage.INDEX,
         });
+
 
         const gpuObjects = { vertexBuffer, indexBuffer };
         this.gpuObjects.set(mesh, gpuObjects);
