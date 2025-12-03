@@ -1,5 +1,9 @@
 import { quat, mat4 } from './gl-matrix-module.js';
-import { Camera } from './core/core.js';
+import { 
+    Camera,
+    Entity,
+    Light,
+ } from './core/core.js';
 
 import { GLTFLoader } from './loaders/GLTFLoader.js';
 
@@ -7,16 +11,25 @@ import { ResizeSystem } from './systems/ResizeSystem.js';
 import { UpdateSystem } from './systems/UpdateSystem.js';
 
 import { UnlitRenderer } from './renderers/UnlitRenderer.js';
+import { LambertRenderer } from './renderers/LambertRenderer.js';
+
+const canvas = document.querySelector('canvas');
+//const renderer = new UnlitRenderer(canvas);
+const renderer = new LambertRenderer(canvas);
+await renderer.initialize();
 
 const loader = new GLTFLoader();
-await loader.load(new URL('./assets/models/monkey/monkey.gltf', import.meta.url));
+await loader.load(new URL('./assets/models/test-bajtica.gltf', import.meta.url));
 
 const scene = loader.loadScene();
 const camera = scene.find(entity => entity.getComponentOfType(Camera));
 
-const canvas = document.querySelector('canvas');
-const renderer = new UnlitRenderer(canvas);
-await renderer.initialize();
+const light = new Entity();
+light.addComponent(new Light({
+    //color: [255, 255, 0],
+    //direction: [5, 1, -0.5],
+}));
+scene.push(light);
 
 function update(t, dt) {
     for (const entity of scene) {

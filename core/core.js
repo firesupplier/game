@@ -1,6 +1,7 @@
 export * from './Accessor.js';
 export * from './Camera.js';
 export * from './Entity.js';
+export * from './Light.js';
 export * from './Material.js';
 export * from './Mesh.js';
 export * from './Model.js';
