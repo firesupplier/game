@@ -13,40 +13,63 @@ import { UpdateSystem } from './systems/UpdateSystem.js';
 import { UnlitRenderer } from './renderers/UnlitRenderer.js';
 import { LambertRenderer } from './renderers/LambertRenderer.js';
 
-const canvas = document.querySelector('canvas');
-//const renderer = new UnlitRenderer(canvas);
-const renderer = new LambertRenderer(canvas);
-await renderer.initialize();
 
-const loader = new GLTFLoader();
-await loader.load(new URL('./assets/models/test-bajtica.gltf', import.meta.url));
+// --- UI CONTROL -------------------------------------------------------------
 
-const scene = loader.loadScene();
-const camera = scene.find(entity => entity.getComponentOfType(Camera));
+const startScreen = document.getElementById("start-screen");
+const startBtn = document.getElementById("start-btn");
+const canvas = document.querySelector("canvas");
 
-const light = new Entity();
-light.addComponent(new Light({
-    //color: [255, 255, 0],
-    //direction: [5, 1, -0.5],
-}));
-scene.push(light);
+// Hide canvas initially
+canvas.style.display = "none";
 
-function update(t, dt) {
-    for (const entity of scene) {
-        for (const component of entity.components) {
-            component.update?.(t, dt);
+// On click, hide menu and start the game
+startBtn.addEventListener("click", () => {
+    startScreen.style.display = "none";
+    canvas.style.display = "block";
+    startGame();
+});
+
+
+// --- GAME START -------------------------------------------------------------
+
+async function startGame() {
+
+    // Initialize renderer
+    const renderer = new LambertRenderer(canvas);
+    await renderer.initialize();
+
+    // Load GLTF
+    const loader = new GLTFLoader();
+    await loader.load(new URL('./assets/models/test-bajtica.gltf', import.meta.url));
+
+    const scene = loader.loadScene();
+    const camera = scene.find(entity => entity.getComponentOfType(Camera));
+
+    // Add a light
+    const light = new Entity();
+    light.addComponent(new Light({}));
+    scene.push(light);
+
+    // Update loop
+    function update(t, dt) {
+        for (const entity of scene) {
+            for (const component of entity.components) {
+                component.update?.(t, dt);
+            }
         }
     }
+
+    // Render loop
+    function render() {
+        renderer.render(scene, camera);
+    }
+
+    // Resize handling
+    function resize({ displaySize: { width, height }}) {
+        camera.getComponentOfType(Camera).aspect = width / height;
+    }
+
+    new ResizeSystem({ canvas, resize }).start();
+    new UpdateSystem({ update, render }).start();
 }
-
-function render() {
-    renderer.render(scene, camera);
-}
-
-function resize({ displaySize: { width, height }}) {
-    camera.getComponentOfType(Camera).aspect = width / height;
-}
-
-new ResizeSystem({ canvas, resize }).start();
-new UpdateSystem({ update, render }).start();
-
