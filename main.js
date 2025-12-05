@@ -13,6 +13,7 @@ import { UpdateSystem } from './systems/UpdateSystem.js';
 import { UnlitRenderer } from './renderers/UnlitRenderer.js';
 import { LambertRenderer } from './renderers/LambertRenderer.js';
 
+import {showHUD, showDialogue, closeHUD} from './hud/showHUD.js'
 
 // --- UI CONTROL -------------------------------------------------------------
 
