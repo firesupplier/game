@@ -166,6 +166,7 @@ async function startGame() {
             }),
         ],
     }));
+    character.addComponent(new Character());
     character.addComponent(new CharacterController(character, canvas, camera));
     scene.push(character);
 

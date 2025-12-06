@@ -67,14 +67,14 @@ export class Physics {
 
         if(a.getComponentOfType(Character)){
             if(isColliding && b.getComponentOfType(Model).solid){
-                a.components[3].colliding = true;
+                a.components[2].colliding = true;
             } else if(isColliding && b.getComponentOfType(Pickup)) {
                 b.components[2] = true;
-                a.components[3].pickups[0] = true;
+                a.components[2].pickups[0] = true;
                 b.components[0].translation[1] = -10;
                 return;
             } else {
-                a.components[3].colliding = false;
+                a.components[2].colliding = false;
                 return;
             }
         }
