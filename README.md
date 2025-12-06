@@ -21,6 +21,7 @@ Changelog: 6.12.2025
 7. Added looping music to main.js
 
 8. Osnovni pickup
+9. Ponovno popravil kamero ter jo vezal na položaj lika in ne na njegovo translacijo
 
 Controls:
 1. Enter --> Continue the dialogue, or make it show up for the first time. You close it by finishing the dialogue.

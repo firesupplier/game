@@ -131,7 +131,6 @@ async function startGame() {
         }));
     scene.push(light2);
 
-
     // third light, blinking
     const light3 = new Entity();
     light3.addComponent(new Light({
@@ -169,6 +168,8 @@ async function startGame() {
     character.addComponent(new Character());
     character.addComponent(new CharacterController(character, canvas, camera));
     scene.push(character);
+
+    console.log(character.components[1].primitives[0].mesh.vertices[0].position);
 
 const kockaMesh = await loaderOBJ.load(new URL('./assets/models/kocka.obj', import.meta.url));
 const kockaTekstura = await loaderImage.load(new URL('./assets/models/tekstura.png', import.meta.url));

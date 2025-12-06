@@ -41,14 +41,14 @@ export class CharacterController {
         doc.addEventListener('keydown', this.keydownHandler);
         doc.addEventListener('keyup', this.keyupHandler);
 
-        element.addEventListener('click', e => element.requestPointerLock());
+        /*element.addEventListener('click', e => element.requestPointerLock());
         doc.addEventListener('pointerlockchange', e => {
             if (doc.pointerLockElement === element) {
                 doc.addEventListener('pointermove', this.pointermoveHandler);
             } else {
                 doc.removeEventListener('pointermove', this.pointermoveHandler);
             }
-        });
+        });*/
     }
 
     update(t, dt) {
@@ -101,14 +101,18 @@ export class CharacterController {
             // Update translation based on velocity.
             vec3.scaleAndAdd(transform.translation,
                 transform.translation, this.velocity, dt);
-                        
+            
+            //this.entity.components[1].primitives[0].mesh.vertices[0].position
+            console.log(transform.translation);
             //Premika kamero!
-            if(!colliding){
+            /*if(!colliding){
                 vec3.scaleAndAdd(transCamera.translation,
                     transCamera.translation, this.velocity, dt);
                 transCamera.translation[2] = -15;
-            }
-
+            }*/
+            const offset = [-2.8, 5.3, -14.2];
+            transCamera.translation[0] = 
+                offset[0] + this.entity.components[1].primitives[0].mesh.vertices[0].position[0] + transform.translation[0];
         }
     }
 
