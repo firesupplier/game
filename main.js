@@ -56,6 +56,23 @@ startBtn.addEventListener("click", () => {
 // game start
 async function startGame() {
 
+    // Music player
+    var bgm = document.getElementById("bgm");
+    bgm.addEventListener('ended', function() {
+        loop();
+    }, false);
+
+    function loop() {
+        bgm.currentTime = 0;
+        bgm.play()
+    }
+
+    bgm.addEventListener('canplay', function() {
+        bgm.play();
+    }, false);
+
+    bgm.play();
+    
     // Initialize renderer
     const renderer = new LambertRenderer(canvas);
     await renderer.initialize();
