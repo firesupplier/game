@@ -9,6 +9,7 @@ export class HUDManager {
         this.setupKeyboardControls();
         this.buttonCallbacks = new Map();
         this.inDialogue = false;
+        this.dialogueId = 0;
     }
 
 // ---------------------------------------------------------------------------------------------
@@ -16,9 +17,13 @@ export class HUDManager {
     setupKeyboardControls() { // Scrolling through dialogue
         document.addEventListener('keydown', (event) => {
             if (event.key === 'Enter') {
-                dialogueMaster.inputReader(0);
+                dialogueMaster.inputReader(this.dialogueId);
             }
         });
+    }
+
+    setDialogueId(ID) {
+        this.dialogueId = ID;
     }
 
 // ---------------------------------------------------------------------------------------------
@@ -101,6 +106,10 @@ export class HUDManager {
                             callbackData.callback()
                         }
                         if (button.buttonID !== undefined) {
+                            const clickSound = document.getElementById("click-sound");   
+                            clickSound.play();
+                            dialogueMaster.updateDialogueCounter();
+                            this.dialogueId = button.buttonID;
                             dialogueMaster.inputReader(button.buttonID);
                         }
                     })
