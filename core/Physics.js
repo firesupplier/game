@@ -63,7 +63,6 @@ export class Physics {
         const isColliding = this.aabbIntersection(aBox, bBox);
 
         if(a.getComponentOfType(Character)){
-            console.log(a.components[3].colliding);
             if(isColliding && b.getComponentOfType(Model)){
                 a.components[3].colliding = true;
             } else{
