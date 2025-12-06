@@ -11,12 +11,114 @@ canvas {
 }
 
 
+/* ----------- HUD styels -----------*/
+
+#hud-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 84%;
+    pointer-events: none;
+    z-index: 1000; /* HUD appears above the canvas */
+    font-family: "MyGameFont", sans-serif;
+}
+
+.hud-panel {
+    position: absolute; /* Closest to hud-overlay */
+    background: rgba(0, 0, 0, 0.95);
+    color: white;
+    border-radius: 10px;
+    padding: 20px;
+    max-width: 90%;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5); /* Maybe not necasarry, just for adding a shadow behind the dialogue box for extra DEPTH. */
+    border: 2px solid rgba(255, 255, 255, 1);
+    pointer-events: auto; /* Re-enables clicking for this element */
+    transition: all 0.3s ease; /* easing transition for any changes to the dialogue box */
+}
+.hud-panel.center { /* Positions dialogue box in the centre of the screen */
+    top: 100%;
+    left: 50%;
+    text-align: left;
+}
+
+.hud-title {
+    font-size: 2.5em;
+    font-weight: bold;
+    margin-bottom: 10px;
+    color: rgb(255, 0, 0);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    padding: 3px 0;
+}
+.hud-text {
+    font-size: 2em;
+    line-height: 1.5;
+    margin: 0;
+}
+.hud-line {
+    margin: 5px 0;
+    padding: 3px 0;
+}
+
+.hud-buttons-container {
+    display: flex;
+    gap: 15px;
+    margin-top: 20px;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.hud-button {
+    background: rgba(255, 255, 255, 0);
+    color: rgb(255, 255, 255);
+    border: white;
+    padding: 12px 24px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 1.5em;
+    font-weight: bold;
+    transition: all 0.2s ease;
+    min-width: 120px;
+    text-align: left;
+    font-family: "MyGameFont", sans-serif;
+}
+
+.hud-button:hover {
+    background: rgba(255, 255, 255, 0.3);
+    transform: translate(-2px, -2px);
+}
+
+.hud-button:active {
+    transform: translate(0, 0);
+}
+
+/* HUD animations */
+@keyframes hudFadeIn {
+    from {opacity: 0; transform: translate(-50%, -60%);}
+    to {opacity: 1; transform: translate(-50%, -50%);}
+}
+
+.hud-fade-in {
+    animation: hudFadeIn 0.5s ease forwards; /* forwards means you keep the final state */
+}
+
+
+/* ----------- start screen -----------*/
 @font-face {
     font-family: "MyGameFont"; 
     src: url("./assets/fonts/VCR_OSD_MONO_1.001.ttf") format("truetype");
     font-weight: normal;
     font-style: normal;
 }
+
+#start-buttons {
+    width: 30%;          
+    display: flex;
+    justify-content: space-between;
+    margin-top: 1rem;
+}
+
 
 #start-screen h1 {
     font-family: "MyGameFont", sans-serif;
@@ -55,14 +157,12 @@ canvas {
 }
 
 
-
 p {
     font-family: "MyGameFont", sans-serif;
     text-align: center;
     margin-bottom: 2rem;
 
 }
-
 
 #start-screen {
     position: fixed;
@@ -94,13 +194,15 @@ p {
 
 
 #game-logo {
-    width: 200px;       /* adjust size */
+    width: 200px;      
     height: auto;
-    margin-bottom: 2rem; /* space between image and title */
+    margin-bottom: 2rem; 
 }
 
-#end-screen {
 
+/* ----------- end screen -----------*/
+
+#end-screen {
     position: fixed;
     top: 0;
     left: 0;
@@ -115,7 +217,6 @@ p {
     z-index: 10;
     font-family: Arial, sans-serif;
 }
-
 
 
 #end-screen button {
@@ -141,3 +242,43 @@ p {
     transform: translate(0, 0);      
     box-shadow: 4px 4px 0 #7A8C6D;  
 }
+
+
+/* ----------- ctrls popup screen -----------*/
+#overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.5); /* dim background */
+    z-index: 15; 
+}
+
+#controls {
+    z-index: 20;
+    display: none;
+    width: 50%;
+    height: 30%;
+    background: black;
+    color: white;
+    border: 2px solid white;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    padding: 50px;
+}
+
+.close-btn {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: none;
+    color: white;
+    border: none;
+    font-size: 20px;
+    cursor: pointer;
+}
+
