@@ -63,6 +63,7 @@ startBtn.addEventListener("click", () => {
 });
 
 var bgm = document.getElementById("bgm");
+bgm.loop = true;
 var playMusic = true;
 
 document.addEventListener("keydown", (event) => {
@@ -73,14 +74,6 @@ document.addEventListener("keydown", (event) => {
 
 function musicPlayer() {
     if (playMusic) {
-        bgm.addEventListener('ended', function() {
-            loop();
-        }, false);
-
-        function loop() {
-            bgm.currentTime = 0;
-            bgm.play()
-        }
         bgm.play();
         playMusic = false;
     } else {
