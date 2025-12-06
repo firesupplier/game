@@ -8,6 +8,7 @@ import {
     Material,
     Mesh,
     Model,
+    Pickup,
     Primitive,
     Sampler,
     Texture,
@@ -131,6 +132,33 @@ scene.push(character);
 
 const kockaMesh = await loaderOBJ.load(new URL('./assets/models/kocka.obj', import.meta.url));
 const kockaTekstura = await loaderImage.load(new URL('./assets/models/tekstura.png', import.meta.url));
+
+const pickup = new Entity();
+pickup.addComponent(new Transform({
+    translation: [-20, 0, -5],
+    scale: [0.5, 0.5, 0.5],
+}));
+pickup.addComponent(new Model({
+    primitives: [
+        new Primitive({
+            mesh: kockaMesh,
+            material: new Material({
+                baseTexture: new Texture({
+                    image: kockaTekstura,
+                    sampler: new Sampler,
+                })
+            })
+        })
+    ],
+    solid: false,
+}));
+pickup.addComponent(new Pickup())
+pickup.aabb = {
+    min: [-0.2, -0.2, -0.2],
+    max: [0.2, 0.2, 0.2],
+};
+scene.push(pickup);
+
 const kocka = new Entity();
 kocka.addComponent(new Transform({
     translation: [-10, 0, -5],

@@ -1,6 +1,7 @@
 import { vec3, mat4 } from '../gl-matrix-module.js';
 import { Character } from './Character.js';
 import { Model } from './Model.js';
+import { Pickup } from './Pickup.js';
 import { getGlobalModelMatrix } from './SceneUtils.js';
 import { Transform } from './Transform.js';
 
@@ -13,9 +14,11 @@ export class Physics {
     update(t, dt) {
         for (const entity of this.scene) {
             for(const other of this.scene){
-                if(entity.aabb && other.aabb && entity !== other){
-                    this.resolveCollision(entity, other);
-                }   
+                if(other.getComponentOfType(Model)){
+                    if(entity.aabb && other.aabb && entity !== other){
+                        this.resolveCollision(entity, other);
+                    } 
+                }  
             }
         }
     }
@@ -63,9 +66,14 @@ export class Physics {
         const isColliding = this.aabbIntersection(aBox, bBox);
 
         if(a.getComponentOfType(Character)){
-            if(isColliding && b.getComponentOfType(Model)){
+            if(isColliding && b.getComponentOfType(Model).solid){
                 a.components[3].colliding = true;
-            } else{
+            } else if(isColliding && b.getComponentOfType(Pickup)) {
+                b.components[2] = true;
+                a.components[3].pickups[0] = true;
+                b.components[0].translation[1] = -10;
+                return;
+            } else {
                 a.components[3].colliding = false;
                 return;
             }
