@@ -59,16 +59,17 @@ export class CharacterController {
 
         // Map user input to the acceleration vector.
         const acc = vec3.create();
-        if (this.keys['KeyS']) {
+        const inDialogue = window.hudManager.getDialogueValue(); // Checks if in dialogue and if so prevents movement
+        if (this.keys['KeyS'] && !inDialogue) {
             vec3.add(acc, acc, forward);
         }
-        if (this.keys['KeyW']) {
+        if (this.keys['KeyW'] && !inDialogue) {
             vec3.sub(acc, acc, forward);
         }
-        if (this.keys['KeyA']) {
+        if (this.keys['KeyA'] && !inDialogue) {
             vec3.add(acc, acc, right);
         }
-        if (this.keys['KeyD']) {
+        if (this.keys['KeyD'] && !inDialogue) {
             vec3.sub(acc, acc, right);
         }
         
@@ -77,10 +78,10 @@ export class CharacterController {
         vec3.scaleAndAdd(this.velocity, this.velocity, acc, dt * this.acceleration);
 
         // If there is no user input, apply decay.
-        if (!this.keys['KeyW'] &&
+        if ((!this.keys['KeyW'] &&
             !this.keys['KeyS'] &&
             !this.keys['KeyD'] &&
-            !this.keys['KeyA'])
+            !this.keys['KeyA']) || inDialogue)
         {
             const decay = Math.exp(dt * Math.log(1 - this.decay));
             vec3.scale(this.velocity, this.velocity, decay);
@@ -128,5 +129,4 @@ export class CharacterController {
     keyupHandler(e) {
         this.keys[e.code] = false;
     }
-
 }
