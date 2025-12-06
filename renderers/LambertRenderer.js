@@ -346,7 +346,7 @@ export class LambertRenderer extends BaseRenderer {
             colorAttachments: [
                 {
                     view: this.context.getCurrentTexture(),
-                    clearValue: [1, 1, 1, 1],
+                    clearValue: { r: 0, g: 0, b: 0, a: 1 },
                     loadOp: 'clear',
                     storeOp: 'store',
                 }
