@@ -29,24 +29,24 @@ import {showHUD, showDialogue, closeHUD} from './hud/showHUD.js'
 
 // starting screen
 
-// const startScreen = document.getElementById("start-screen");
-// const startBtn = document.getElementById("start-btn");
+const startScreen = document.getElementById("start-screen");
+const startBtn = document.getElementById("start-btn");
 const canvas = document.querySelector("canvas");
 
-// canvas.style.display = "none";
-// const clickSound = document.getElementById("click-sound");
+canvas.style.display = "none";
+const clickSound = document.getElementById("click-sound");
 
 
-// startBtn.addEventListener("click", () => {
-//     clickSound.currentTime = 0; 
-//     clickSound.play();
-//     startScreen.style.display = "none";
-//     canvas.style.display = "block";
-//     startGame();
-// });
+startBtn.addEventListener("click", () => {
+    clickSound.currentTime = 0; 
+    clickSound.play();
+    startScreen.style.display = "none";
+    canvas.style.display = "block";
+    startGame();
+});
 
 // game start
-//async function startGame() {
+async function startGame() {
 
     // Initialize renderer
     const renderer = new LambertRenderer(canvas);
@@ -70,20 +70,20 @@ const canvas = document.querySelector("canvas");
     scene.push(camera);
 
 
-    // Lights in the scene -> three
-    const light = new Entity();
+    // Lights in the scene -> three (we can have max 4)
 
+    // first light
+    const light = new Entity();
     light.addComponent(new Light({
-        color: [20/255, 0, 200/255],
+        color: [20/255, 0, 200/255], // lights are normalised so its works better?
         direction: [-50, 3, -5],
         blinking: false,
         baseColor: [20/255,0,200/255],
     }));
     scene.push(light);
 
-
+    // second light
     const light2 = new Entity();
-
     light2.addComponent(new Light({
         color: [0, 20/255, 220/255], // convert to 0–1
         direction: [50, 10, -0.5],
@@ -93,7 +93,7 @@ const canvas = document.querySelector("canvas");
     scene.push(light2);
 
 
-
+    // third light, blinking
     const light3 = new Entity();
     light3.addComponent(new Light({
         color: [20/255, 20/255, 220/255],
@@ -104,15 +104,6 @@ const canvas = document.querySelector("canvas");
     scene.push(light3);
 
 
-
-    // const ambient = new Entity();
-    // ambient.addComponent(new Light({
-    //     type: 'ambient',          // if supported
-    //     color: [0.05, 0.05, 0.05] // very dim gray
-    // }));
-    // scene.push(ambient);
-
-   
 
     const loaderOBJ = new OBJLoader();
     const loaderImage = new ImageLoader();
@@ -147,14 +138,11 @@ const canvas = document.querySelector("canvas");
             }
 
             const light = entity.getComponentOfType(Light);
-            if (light?.blinking) {
-                const tSec = t / 1000; // convert ms to seconds
-                const speed = 2; // blinks per second
+            if (light?.blinking) { // this only defines color intensity, real math is in renderer
+                const tSec = t / 1000; 
+                const speed = 2; 
                 const isOn = Math.sin(tSec * Math.PI * 2 * speed) > 0;
-
-                // instead of 0 for "off", use 0.1–0.2 for a dim flicker
                 const intensity = isOn ? 1 : 0.70;
-
                 light.color = light.baseColor.map(c => c * intensity);
             }
         }
@@ -172,4 +160,4 @@ const canvas = document.querySelector("canvas");
 
     new ResizeSystem({ canvas, resize }).start();
     new UpdateSystem({ update, render }).start();
-//}
+}

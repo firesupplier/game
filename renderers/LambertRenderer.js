@@ -50,18 +50,18 @@ const cameraBindGroupLayout = {
 
 const MAX_LIGHTS = 4; // must match the shader
 
-
+// handle multiple lights
 const lightBindGroupLayout = {
     entries: [
         {
             binding: 0,
             visibility: GPUShaderStage.VERTEX | GPUShaderStage.FRAGMENT,
-            buffer: {}, // the array of lights
+            buffer: {}, // array of lights
         },
         {
             binding: 1,
             visibility: GPUShaderStage.FRAGMENT,
-            buffer: {}, // the light count u32
+            buffer: {}, 
         }
     ],
 };
@@ -296,7 +296,7 @@ export class LambertRenderer extends BaseRenderer {
     });
 
     const lightCountBuffer = this.device.createBuffer({
-        size: 4, // single u32
+        size: 4, 
         usage: GPUBufferUsage.UNIFORM | GPUBufferUsage.COPY_DST,
     });
 
@@ -386,7 +386,7 @@ export class LambertRenderer extends BaseRenderer {
         this.device.queue.writeBuffer(cameraUniformBuffer, 64, projectionMatrix);
         this.renderPass.setBindGroup(0, cameraBindGroup);
 
-        // 1. Gather all directional lights
+        // Computing multiple lights
         const lights = scene
             .map(e => e.getComponentOfType(Light))
             .filter(l => l); // include all lights
@@ -395,10 +395,8 @@ export class LambertRenderer extends BaseRenderer {
         const lightData = new Float32Array(lightCount * 8);
 
         lights.forEach((light, i) => {
-            // calculate color
             let color;
-            if (light.blinking) {
-                // initialize flicker state if missing
+            if (light.blinking) { // check for blinking atribute
                 if (!light._flicker) {
                     light._flicker = {
                         intensity: 1,
@@ -407,6 +405,7 @@ export class LambertRenderer extends BaseRenderer {
                     };
                 }
 
+                // random flicker math
                 const dt = 1 / 60;
                 light._flicker.timer -= dt;
                 if (light._flicker.timer <= 0) {
@@ -421,13 +420,13 @@ export class LambertRenderer extends BaseRenderer {
 
                 color = light.baseColor.map(c => c * light._flicker.intensity);
             } else {
-                // non-blinking lights: use base color
+                // if not blinking use base color
                 color = [...light.baseColor];
             }
 
             const dir = vec3.normalize(vec3.create(), light.direction);
 
-            // fill GPU buffer
+            // filling gpu buffer, shader wants color first!
             lightData[i * 8 + 0] = color[0];
             lightData[i * 8 + 1] = color[1];
             lightData[i * 8 + 2] = color[2];
@@ -435,24 +434,17 @@ export class LambertRenderer extends BaseRenderer {
             lightData[i * 8 + 4] = dir[0];
             lightData[i * 8 + 5] = dir[1];
             lightData[i * 8 + 6] = dir[2];
-            lightData[i * 8 + 7] = 0; // padding
+            lightData[i * 8 + 7] = 0; 
 
-            // store the color back in the light object so render code can use it
             light.color = color;
         });
 
 
-        // 3. Write buffer
         const { lightUniformBuffer, lightCountBuffer, lightBindGroup } = this.prepareLight(lights); // need to update prepareLight to accept array
         this.device.queue.writeBuffer(lightUniformBuffer, 0, lightData);
         this.device.queue.writeBuffer(lightCountBuffer, 0, new Uint32Array([lightCount]));
-
-
-        // 4. Set bind group
         this.renderPass.setBindGroup(1, lightBindGroup);
 
-
-        
 
         for (const entity of scene) {
             this.renderEntity(entity);

@@ -57,14 +57,14 @@ fn vertex(input: VertexInput) -> VertexOutput {
     return output;
 }
 
-@fragment
+@fragment 
 fn fragment(input: FragmentInput) -> FragmentOutput {
     var output: FragmentOutput;
 
     let N = normalize(input.normal);
     var diffuseLight: vec3f = vec3(0.0, 0.0, 0.0);
 
-    // accumulate contributions from all lights
+    // accepts multiple lights
     for (var i: u32 = 0u; i < lightCount; i = i + 1u) {
         let L = normalize(lights[i].direction);
         let lambert = max(dot(N, L), 0.0);
