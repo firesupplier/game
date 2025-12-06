@@ -1,4 +1,6 @@
 import { vec3, mat4 } from '../gl-matrix-module.js';
+import { Character } from './Character.js';
+import { Model } from './Model.js';
 import { getGlobalModelMatrix } from './SceneUtils.js';
 import { Transform } from './Transform.js';
 
@@ -59,6 +61,17 @@ export class Physics {
 
         // Check if there is collision.
         const isColliding = this.aabbIntersection(aBox, bBox);
+
+        if(a.getComponentOfType(Character)){
+            console.log(a.components[3].colliding);
+            if(isColliding && b.getComponentOfType(Model)){
+                a.components[3].colliding = true;
+            } else{
+                a.components[3].colliding = false;
+                return;
+            }
+        }
+
         if (!isColliding) {
             return;
         }

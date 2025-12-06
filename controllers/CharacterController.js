@@ -1,6 +1,7 @@
 import { quat, vec3, mat4 } from '../gl-matrix-module.js';
 
 import { Transform } from '../core/Transform.js';
+import { Character } from '../core/Character.js';
 
 export class CharacterController {
 
@@ -30,7 +31,7 @@ export class CharacterController {
     }
 
     initHandlers() {
-        this.pointermoveHandler = this.pointermoveHandler.bind(this);
+        //this.pointermoveHandler = this.pointermoveHandler.bind(this);
         this.keydownHandler = this.keydownHandler.bind(this);
         this.keyupHandler = this.keyupHandler.bind(this);
 
@@ -94,32 +95,21 @@ export class CharacterController {
         }
 
         const transform = this.entity.getComponentOfType(Transform);
+        const colliding = this.entity.getComponentOfType(Character).colliding;
         const transCamera = this.camera.getComponentOfType(Transform);
         if (transform) {
             // Update translation based on velocity.
             vec3.scaleAndAdd(transform.translation,
                 transform.translation, this.velocity, dt);
-            
+                        
             //Premika kamero!
-            vec3.scaleAndAdd(transCamera.translation,
-                transCamera.translation, this.velocity, dt);
-            transCamera.translation[2] = -15;
+            if(!colliding){
+                vec3.scaleAndAdd(transCamera.translation,
+                    transCamera.translation, this.velocity, dt);
+                transCamera.translation[2] = -15;
+            }
 
         }
-    }
-
-    pointermoveHandler(e) {
-        //const dx = e.movementX;
-        //const dy = e.movementY;
-
-        //this.pitch -= dy * this.pointerSensitivity;
-        //this.yaw   -= dx * this.pointerSensitivity;
-
-        const twopi = Math.PI * 2;
-        const halfpi = Math.PI / 2;
-
-        this.pitch = Math.min(Math.max(this.pitch, -halfpi), halfpi);
-        this.yaw = ((this.yaw % twopi) + twopi) % twopi;
     }
 
     keydownHandler(e) {

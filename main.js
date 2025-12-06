@@ -1,6 +1,7 @@
 import { quat, mat4 } from './gl-matrix-module.js';
 import { 
     Camera,
+    Character,
     Entity,
     Light,
     Transform,
@@ -88,7 +89,7 @@ const characterMesh = await loaderOBJ.load(new URL('./assets/models/placeholder_
 const characterTekstura = await loaderImage.load(new URL('./assets/models/placeholder_character/lik_telo.png', import.meta.url));
 const character = new Entity();
 character.addComponent(new Transform({
-    translation: [0, 0, -5],
+    translation: [0, 0.01, -5],
 }));
 character.addComponent(new Model({
     primitives: [
@@ -104,6 +105,7 @@ character.addComponent(new Model({
     ],
 }));
 character.addComponent(new CharacterController(character, canvas, camera));
+character.addComponent(new Character());
 character.aabb = {
     min: [-0.2, -0.2, -0.2],
     max: [0.2, 0.2, 0.2],

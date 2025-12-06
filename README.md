@@ -15,6 +15,7 @@ Changelog: 6.12.2025
 4. Updates to the character controler (to do with dialogue)
 
 5. Added simple collision detection (za ga popravit oziroma prilagodit sceno)
+6. Camera fix in character class
 
 Controls:
 1. Enter --> Continue the dialogue, or make it show up for the first time. You close it by finishing the dialogue.
