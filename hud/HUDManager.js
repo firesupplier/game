@@ -1,3 +1,5 @@
+import dialogueMaster from './dialogueMaster.js';
+
 export class HUDManager {
 
     constructor() {
@@ -5,30 +7,16 @@ export class HUDManager {
         this.hudElements = new Map();
         this.nextId = 0;
         this.setupKeyboardControls();
-        this.dialogueCounter = 0;
+        this.buttonCallbacks = new Map();
+        this.inDialogue = false;
     }
 
 // ---------------------------------------------------------------------------------------------
 
-    setupKeyboardControls() { // This is here just for testing purposes. Will need to delete later
+    setupKeyboardControls() { // Scrolling through dialogue
         document.addEventListener('keydown', (event) => {
-            if (event.key === 'ArrowUp') { 
-                this.dialogueCounter = 0;
-                this.closeHUD();
-            }
-        });
-        document.addEventListener('keydown', (event) => {
-            if (event.key === 'ArrowRight') {
-                if (this.dialogueCounter == 0) {
-                    this.showDialogue("The Root", "You shouldn't be here :3",);
-                } else if (this.dialogueCounter == 1) {
-                    this.showDialogue("The Root", "I said you shouldn't be here >:3", {textColor: 'red'})
-                } else {
-                    this.closeHUD();
-                    this.dialogueCounter = -1;
-                }
-                this.dialogueCounter++;
-                
+            if (event.key === 'Enter') {
+                dialogueMaster.inputReader(0);
             }
         });
     }
@@ -36,6 +24,7 @@ export class HUDManager {
 // ---------------------------------------------------------------------------------------------
 
     showHUD(options = {}) {
+        this.inDialogue = true;
         const hudId = `hud-${this.nextId++}`
 
         const config = {
@@ -45,11 +34,12 @@ export class HUDManager {
             position: 'center',
             width: '100%',
             height: '30%',
-            backgroundColor: 'rgba(0, 0, 0, 0.95)',
+            background: 'rgba(0, 0, 0, 0.95)',
             textColor: 'white',
             animation: 'fade-in',
             onClose: null,
             allowInteraction: true,
+            buttons: [],
             ...options
         };
 
@@ -80,10 +70,46 @@ export class HUDManager {
             content += '</div>'
         }
 
+        if (config.buttons && config.buttons.length > 0) {
+            content += `<div class="hud-buttons-container">`;
+            config.buttons.forEach((button, index) => {
+                const bId = `${hudId}-button-${index}`;
+                content += `
+                    <button id ="${bId}" class="hud-button" data-button-index="${index}">
+                    ${button.text}
+                    </button>
+                `;
+            });
+            content += `</div>`;
+        }
+
         // ---------------------------------------------------------------------------------------------
 
         hudElement.innerHTML = content;
         this.overlay.appendChild(hudElement);
+
+        // ------------------------------------------------------
+
+        if (config.buttons && config.buttons.length > 0) {
+            config.buttons.forEach((button, index) => {
+                const bId = `${hudId}-button-${index}`;
+                const buttonElement = document.getElementById(bId);
+                if (buttonElement) {
+                    buttonElement.addEventListener('click', () => {
+                        const callbackData = this.buttonCallbacks.get(bId);
+                        if (callbackData && callbackData.callback) {
+                            callbackData.callback()
+                        }
+                        if (button.buttonID !== undefined) {
+                            dialogueMaster.inputReader(button.buttonID);
+                        }
+                    })
+                }
+            });
+        }
+
+        // ------------------------------------------------------
+
         this.hudElements.set(hudId, {
             element: hudElement,
             config: config
@@ -91,7 +117,7 @@ export class HUDManager {
     }
 
 // ---------------------------------------------------------------------------------------------
-
+    
     showDialogue(title, text, options = {}) {
         this.closeHUD();
         return this.showHUD({
@@ -102,23 +128,6 @@ export class HUDManager {
             ...options
         });
     }
-
-// ---------------------------------------------------------------------------------------------
-
-    /*updateHud(hudId, newText) {
-        const hud = this.hudElements.get(hudId);
-        if (hud && hud.element) {
-            const textElement = hud.element.querySelector('.hud-text')
-            if (textElement) {
-                const lines = newText.split('\n');
-                let content = '';
-                lines.forEach(line => {
-                    content += `<div class="hud-line">${line}</div>`;
-                });
-                textElement.innerHTML = content;
-            }
-        }
-    }*/
 
 // ---------------------------------------------------------------------------------------------
 
@@ -136,10 +145,14 @@ export class HUDManager {
                 this.hudElements.delete(hudId);
             }
         }
+        this.inDialogue = false;
     }
 
 // ---------------------------------------------------------------------------------------------
 
+    getDialogueValue() {
+        return this.inDialogue;
+    }
 }
 
 window.hudManager = new HUDManager(); // Is now globally accessible
