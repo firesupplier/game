@@ -167,6 +167,7 @@ canvas {
 
 p {
     font-family: "MyGameFont", sans-serif;
+    font-size: 25px;
     text-align: center;
     margin-bottom: 2rem;
 

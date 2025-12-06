@@ -139,7 +139,7 @@ function endGame() {
 // game start
 async function startGame() {
     let elapsedTime = 0; // seconds
-    const gameDuration = 50000; // end game after 60 seconds
+    const gameDuration = 5; // end game after 60 seconds
 
     // Music player
     musicPlayer();
