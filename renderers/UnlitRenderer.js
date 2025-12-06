@@ -176,8 +176,8 @@ export class UnlitRenderer extends BaseRenderer {
         this.renderPass = encoder.beginRenderPass({
             colorAttachments: [
                 {
-                    view: this.context.getCurrentTexture(),
-                    clearValue: [1, 1, 1, 1],
+                    view: this.context.getCurrentTexture().createView(),
+                    clearValue: { r: 0, g: 0, b: 0, a: 1 }, // black
                     loadOp: 'clear',
                     storeOp: 'store',
                 },

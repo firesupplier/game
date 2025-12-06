@@ -22,4 +22,9 @@ export function closeHUD() {
     hudManager.closeHUD();
 }
 
+export function setDialogueId(ID) {
+    hudManager.setDialogueId(ID);
+}
+
 // ---------------------------------------------------------------------------------------------
+

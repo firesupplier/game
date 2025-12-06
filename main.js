@@ -54,25 +54,38 @@ startBtn.addEventListener("click", () => {
     startGame();
 });
 
+var bgm = document.getElementById("bgm");
+var playMusic = true;
+
+document.addEventListener("keydown", (event) => {
+    if (event.code === "KeyT") {
+        musicPlayer();
+    }
+})
+
+function musicPlayer() {
+    if (playMusic) {
+        bgm.addEventListener('ended', function() {
+            loop();
+        }, false);
+
+        function loop() {
+            bgm.currentTime = 0;
+            bgm.play()
+        }
+        bgm.play();
+        playMusic = false;
+    } else {
+        bgm.pause();
+        playMusic = true;
+    }
+}
+
 // game start
 async function startGame() {
 
     // Music player
-    var bgm = document.getElementById("bgm");
-    bgm.addEventListener('ended', function() {
-        loop();
-    }, false);
-
-    function loop() {
-        bgm.currentTime = 0;
-        bgm.play()
-    }
-
-    bgm.addEventListener('canplay', function() {
-        bgm.play();
-    }, false);
-
-    bgm.play();
+    musicPlayer();
     
     // Initialize renderer
     const renderer = new LambertRenderer(canvas);
@@ -82,53 +95,79 @@ async function startGame() {
     const loader = new GLTFLoader();
     await loader.load(new URL('./assets/models/placeholder_scena/placeholder_scena.gltf', import.meta.url));
 
-const scene = loader.loadScene();
-const camera = new Entity();
-camera.addComponent(new Transform({
-    translation: [-2, 8, -15],
-    rotation: [-0.0006866238545626402, 0.9767575263977051, 0.21432319283485413, 0.0031292226631194353],
-}));
-camera.addComponent(new Camera());
-//FirstPersonController-ja kamera ne uporablja več, lahko se uporablja za debugging
-//camera.addComponent(new FirstPersonController(camera, canvas));
-scene.push(camera);
+    const scene = loader.loadScene();
+    const camera = new Entity();
+    camera.addComponent(new Transform({
+        translation: [-2, 8, -15],
+        rotation: [-0.0006866238545626402, 0.9767575263977051, 0.21432319283485413, 0.0031292226631194353],
 
-const light = new Entity();
-light.addComponent(new Light({
-    //color: [255, 255, 0],
-    direction: [5, 1, -0.5],
-}));
-scene.push(light);
+    }));
 
-const loaderOBJ = new OBJLoader();
-const loaderImage = new ImageLoader();
+    camera.addComponent(new Camera());
+    //FirstPersonController-ja kamera ne uporablja več, lahko se uporablja za debugging
+    //camera.addComponent(new FirstPersonController(camera, canvas));
+    scene.push(camera);
 
-const characterMesh = await loaderOBJ.load(new URL('./assets/models/placeholder_character/placeholder_character.obj', import.meta.url));
-const characterTekstura = await loaderImage.load(new URL('./assets/models/placeholder_character/lik_telo.png', import.meta.url));
-const character = new Entity();
-character.addComponent(new Transform({
-    translation: [0, 0.01, -5],
-}));
-character.addComponent(new Model({
-    primitives: [
-        new Primitive({
-            mesh: characterMesh,
-            material: new Material({
-                baseTexture: new Texture({
-                    image: characterTekstura,
-                    sampler: new Sampler,
-                })
+
+    // Lights in the scene -> three (we can have max 4)
+
+    // first light
+    const light = new Entity();
+    light.addComponent(new Light({
+        color: [20/255, 0, 200/255], // lights are normalised so its works better?
+        direction: [-50, 3, -5],
+        blinking: false,
+        baseColor: [20/255,0,200/255],
+    }));
+    scene.push(light);
+
+    // second light
+    const light2 = new Entity();
+    light2.addComponent(new Light({
+        color: [0, 20/255, 220/255], // convert to 0–1
+        direction: [50, 10, -0.5],
+        blinking: false,
+        baseColor: [0, 20/255, 220/255],
+        }));
+    scene.push(light2);
+
+
+    // third light, blinking
+    const light3 = new Entity();
+    light3.addComponent(new Light({
+        color: [20/255, 20/255, 220/255],
+        direction: [5, 40, -0.5],
+        blinking: true,
+        baseColor: [20/255, 20/255, 220/255]
+    }));
+    scene.push(light3);
+
+
+
+    const loaderOBJ = new OBJLoader();
+    const loaderImage = new ImageLoader();
+
+    const characterMesh = await loaderOBJ.load(new URL('./assets/models/placeholder_character/placeholder_character.obj', import.meta.url));
+    const characterTekstura = await loaderImage.load(new URL('./assets/models/placeholder_character/lik_telo.png', import.meta.url));
+    const character = new Entity();
+    character.addComponent(new Transform({
+        translation: [0, 0, -5],
+    }));
+    character.addComponent(new Model({
+        primitives: [
+            new Primitive({
+                mesh: characterMesh,
+                material: new Material({
+                    baseTexture: new Texture({
+                        image: characterTekstura,
+                        sampler: new Sampler,
+                    })
+                }),
             }),
-        }),
-    ],
-}));
-character.addComponent(new CharacterController(character, canvas, camera));
-character.addComponent(new Character());
-character.aabb = {
-    min: [-0.2, -0.2, -0.2],
-    max: [0.2, 0.2, 0.2],
-};
-scene.push(character);
+        ],
+    }));
+    character.addComponent(new CharacterController(character, canvas, camera));
+    scene.push(character);
 
 const kockaMesh = await loaderOBJ.load(new URL('./assets/models/kocka.obj', import.meta.url));
 const kockaTekstura = await loaderImage.load(new URL('./assets/models/tekstura.png', import.meta.url));
@@ -198,6 +237,15 @@ for (const entity of scene) {
         for (const entity of scene) {
             for (const component of entity.components) {
                 component.update?.(t, dt);
+            }
+
+            const light = entity.getComponentOfType(Light);
+            if (light?.blinking) { // this only defines color intensity, real math is in renderer
+                const tSec = t / 1000; 
+                const speed = 2; 
+                const isOn = Math.sin(tSec * Math.PI * 2 * speed) > 0;
+                const intensity = isOn ? 1 : 0.70;
+                light.color = light.baseColor.map(c => c * intensity);
             }
         }
         physics.update(t, dt);

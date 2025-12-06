@@ -23,3 +23,4 @@ Changelog: 6.12.2025
 Controls:
 1. Enter --> Continue the dialogue, or make it show up for the first time. You close it by finishing the dialogue.
 2. WASD --> premikanje
+3. T --> Mute background music

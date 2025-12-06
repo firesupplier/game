@@ -48,15 +48,24 @@ const cameraBindGroupLayout = {
     ],
 };
 
+const MAX_LIGHTS = 4; // must match the shader
+
+// handle multiple lights
 const lightBindGroupLayout = {
     entries: [
         {
             binding: 0,
             visibility: GPUShaderStage.VERTEX | GPUShaderStage.FRAGMENT,
-            buffer: {},
+            buffer: {}, // array of lights
         },
+        {
+            binding: 1,
+            visibility: GPUShaderStage.FRAGMENT,
+            buffer: {}, 
+        }
     ],
 };
+
 
 const modelBindGroupLayout = {
     entries: [
@@ -275,27 +284,36 @@ export class LambertRenderer extends BaseRenderer {
         return gpuObjects;
     }
 
-    prepareLight(light) {
-        if (this.gpuObjects.has(light)) {
-            return this.gpuObjects.get(light);
-        }
+    prepareLight(lights) {
+    const key = lights; 
+    if (this.gpuObjects.has(key)) return this.gpuObjects.get(key);
 
-        const lightUniformBuffer = this.device.createBuffer({
-            size: 32,
-            usage: GPUBufferUsage.UNIFORM | GPUBufferUsage.COPY_DST,
-        });
+    const bufferSize = lights.length * 6 * 4; // 6 floats per light * 4 bytes
 
-        const lightBindGroup = this.device.createBindGroup({
-            layout: this.lightBindGroupLayout,
-            entries: [
-                { binding: 0, resource: lightUniformBuffer },
-            ],
-        });
+    const lightUniformBuffer = this.device.createBuffer({
+        size: MAX_LIGHTS * 32, // 6 floats per light
+        usage: GPUBufferUsage.UNIFORM | GPUBufferUsage.COPY_DST,
+    });
 
-        const gpuObjects = { lightUniformBuffer, lightBindGroup };
-        this.gpuObjects.set(light, gpuObjects);
-        return gpuObjects;
-    }
+    const lightCountBuffer = this.device.createBuffer({
+        size: 4, 
+        usage: GPUBufferUsage.UNIFORM | GPUBufferUsage.COPY_DST,
+    });
+
+    const lightBindGroup = this.device.createBindGroup({
+        layout: this.lightBindGroupLayout,
+        entries: [
+            { binding: 0, resource: { buffer: lightUniformBuffer } },
+            { binding: 1, resource: { buffer: lightCountBuffer } },
+        ],
+    });
+
+
+    const gpuObjects = { lightUniformBuffer, lightCountBuffer, lightBindGroup };
+    this.gpuObjects.set(key, gpuObjects);
+    return gpuObjects;
+}
+
 
     prepareTexture(texture) {
         if (this.gpuObjects.has(texture)) {
@@ -346,7 +364,7 @@ export class LambertRenderer extends BaseRenderer {
             colorAttachments: [
                 {
                     view: this.context.getCurrentTexture(),
-                    clearValue: [1, 1, 1, 1],
+                    clearValue: { r: 0, g: 0, b: 0, a: 1 },
                     loadOp: 'clear',
                     storeOp: 'store',
                 }
@@ -368,14 +386,65 @@ export class LambertRenderer extends BaseRenderer {
         this.device.queue.writeBuffer(cameraUniformBuffer, 64, projectionMatrix);
         this.renderPass.setBindGroup(0, cameraBindGroup);
 
-        const light = scene.find(entity => entity.getComponentOfType(Light));
-        const lightComponent = light.getComponentOfType(Light);
-        const lightColor = vec3.scale(vec3.create(), lightComponent.color, 1 / 255);
-        const lightDirection = vec3.normalize(vec3.create(), lightComponent.direction);
-        const { lightUniformBuffer, lightBindGroup } = this.prepareLight(lightComponent);
-        this.device.queue.writeBuffer(lightUniformBuffer, 0, lightColor);
-        this.device.queue.writeBuffer(lightUniformBuffer, 16, lightDirection);
+        // Computing multiple lights
+        const lights = scene
+            .map(e => e.getComponentOfType(Light))
+            .filter(l => l); // include all lights
+
+        const lightCount = lights.length;
+        const lightData = new Float32Array(lightCount * 8);
+
+        lights.forEach((light, i) => {
+            let color;
+            if (light.blinking) { // check for blinking atribute
+                if (!light._flicker) {
+                    light._flicker = {
+                        intensity: 1,
+                        target: 1,
+                        timer: Math.random() * 0.5,
+                    };
+                }
+
+                // random flicker math
+                const dt = 1 / 60;
+                light._flicker.timer -= dt;
+                if (light._flicker.timer <= 0) {
+                    light._flicker.target = Math.random() < 0.1
+                        ? 0
+                        : 0.6 + Math.random() * 0.4;
+                    light._flicker.timer = 0.05 + Math.random() * 0.3;
+                }
+
+                const lerpFactor = 0.2;
+                light._flicker.intensity += (light._flicker.target - light._flicker.intensity) * lerpFactor;
+
+                color = light.baseColor.map(c => c * light._flicker.intensity);
+            } else {
+                // if not blinking use base color
+                color = [...light.baseColor];
+            }
+
+            const dir = vec3.normalize(vec3.create(), light.direction);
+
+            // filling gpu buffer, shader wants color first!
+            lightData[i * 8 + 0] = color[0];
+            lightData[i * 8 + 1] = color[1];
+            lightData[i * 8 + 2] = color[2];
+            lightData[i * 8 + 3] = 0; // padding
+            lightData[i * 8 + 4] = dir[0];
+            lightData[i * 8 + 5] = dir[1];
+            lightData[i * 8 + 6] = dir[2];
+            lightData[i * 8 + 7] = 0; 
+
+            light.color = color;
+        });
+
+
+        const { lightUniformBuffer, lightCountBuffer, lightBindGroup } = this.prepareLight(lights); // need to update prepareLight to accept array
+        this.device.queue.writeBuffer(lightUniformBuffer, 0, lightData);
+        this.device.queue.writeBuffer(lightCountBuffer, 0, new Uint32Array([lightCount]));
         this.renderPass.setBindGroup(1, lightBindGroup);
+
 
         for (const entity of scene) {
             this.renderEntity(entity);
