@@ -47,7 +47,7 @@ const ctrlsBtn = document.getElementById("ctrls-btn");
 const controlsPopUp = document.getElementById("controls");
 const closeCtrlsBtn = document.getElementById("close-ctrls");
 const overlay = document.getElementById("overlay");
-
+const gameCtrlsBtn = document.getElementById("game-ctrls-btn");
 
 canvas.style.display = "none";
 const clickSound = document.getElementById("click-sound");
@@ -61,6 +61,8 @@ startBtn.addEventListener("click", () => {
     canvas.style.display = "block";
     startGame();
 });
+
+
 
 var bgm = document.getElementById("bgm");
 var playMusic = true;
@@ -113,6 +115,13 @@ closeCtrlsBtn.addEventListener("click", () => {
     controlsPopUp.style.display = "none";
     overlay.style.display = "none";
 
+});
+
+gameCtrlsBtn.addEventListener("click", () => {
+    clickSound.currentTime = 0;
+    clickSound.play();
+    controlsPopUp.style.display = "block";
+    overlay.style.display = "block";
 });
 
 
