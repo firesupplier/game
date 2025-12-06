@@ -47,6 +47,8 @@ const colors = array<vec4f, 3>(
 struct VertexInput {
     @location(0) position: vec4f,
     @location(1) texcoords: vec2f,
+    @location(2) normal: vec3f,
+
 }
 
 struct VertexOutput {

@@ -69,12 +69,50 @@ const canvas = document.querySelector("canvas");
     //camera.addComponent(new FirstPersonController(camera, canvas));
     scene.push(camera);
 
+
+    // Lights in the scene -> three
     const light = new Entity();
+
     light.addComponent(new Light({
-        //color: [255, 255, 0],
-        direction: [5, 1, -0.5],
+        color: [20/255, 0, 200/255],
+        direction: [-50, 3, -5],
+        blinking: false,
+        baseColor: [20/255,0,200/255],
     }));
     scene.push(light);
+
+
+    const light2 = new Entity();
+
+    light2.addComponent(new Light({
+        color: [0, 20/255, 220/255], // convert to 0–1
+        direction: [50, 10, -0.5],
+        blinking: false,
+        baseColor: [0, 20/255, 220/255],
+        }));
+    scene.push(light2);
+
+
+
+    const light3 = new Entity();
+    light3.addComponent(new Light({
+        color: [20/255, 20/255, 220/255],
+        direction: [5, 40, -0.5],
+        blinking: true,
+        baseColor: [20/255, 20/255, 220/255]
+    }));
+    scene.push(light3);
+
+
+
+    // const ambient = new Entity();
+    // ambient.addComponent(new Light({
+    //     type: 'ambient',          // if supported
+    //     color: [0.05, 0.05, 0.05] // very dim gray
+    // }));
+    // scene.push(ambient);
+
+   
 
     const loaderOBJ = new OBJLoader();
     const loaderImage = new ImageLoader();
@@ -106,6 +144,18 @@ const canvas = document.querySelector("canvas");
         for (const entity of scene) {
             for (const component of entity.components) {
                 component.update?.(t, dt);
+            }
+
+            const light = entity.getComponentOfType(Light);
+            if (light?.blinking) {
+                const tSec = t / 1000; // convert ms to seconds
+                const speed = 2; // blinks per second
+                const isOn = Math.sin(tSec * Math.PI * 2 * speed) > 0;
+
+                // instead of 0 for "off", use 0.1–0.2 for a dim flicker
+                const intensity = isOn ? 1 : 0.70;
+
+                light.color = light.baseColor.map(c => c * intensity);
             }
         }
     }

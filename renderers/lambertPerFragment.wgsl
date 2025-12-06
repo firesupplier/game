@@ -24,10 +24,12 @@ struct CameraUniforms {
     projectionMatrix: mat4x4f,
 }
 
-struct LightUniforms {
+struct Light {
     color: vec3f,
     direction: vec3f,
-}
+};
+
+const MAX_LIGHTS = 4u;
 
 struct ModelUniforms {
     modelMatrix: mat4x4f,
@@ -39,7 +41,8 @@ struct MaterialUniforms {
 }
 
 @group(0) @binding(0) var<uniform> camera: CameraUniforms;
-@group(1) @binding(0) var<uniform> light: LightUniforms;
+@group(1) @binding(0) var<uniform> lights: array<Light, MAX_LIGHTS>;
+@group(1) @binding(1) var<uniform> lightCount: u32;
 @group(2) @binding(0) var<uniform> model: ModelUniforms;
 @group(3) @binding(0) var<uniform> material: MaterialUniforms;
 @group(3) @binding(1) var baseTexture: texture_2d<f32>;
@@ -59,15 +62,19 @@ fn fragment(input: FragmentInput) -> FragmentOutput {
     var output: FragmentOutput;
 
     let N = normalize(input.normal);
-    let L = light.direction;
+    var diffuseLight: vec3f = vec3(0.0, 0.0, 0.0);
 
-    let lambert = max(dot(N, L), 0.0);
-    let diffuseLight = lambert * light.color;
+    // accumulate contributions from all lights
+    for (var i: u32 = 0u; i < lightCount; i = i + 1u) {
+        let L = normalize(lights[i].direction);
+        let lambert = max(dot(N, L), 0.0);
+        diffuseLight = diffuseLight + lambert * lights[i].color;
+    }
 
     let baseColor = textureSample(baseTexture, baseSampler, input.texcoords) * material.baseFactor;
     let finalColor = baseColor.rgb * diffuseLight;
 
-    output.color = pow(vec4(finalColor, 1), vec4(1 / 2.2));
+    output.color = pow(vec4(finalColor, 1.0), vec4(1.0 / 2.2));
 
     return output;
 }
