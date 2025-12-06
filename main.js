@@ -53,25 +53,38 @@ startBtn.addEventListener("click", () => {
     startGame();
 });
 
+var bgm = document.getElementById("bgm");
+var playMusic = true;
+
+document.addEventListener("keydown", (event) => {
+    if (event.code === "KeyT") {
+        musicPlayer();
+    }
+})
+
+function musicPlayer() {
+    if (playMusic) {
+        bgm.addEventListener('ended', function() {
+            loop();
+        }, false);
+
+        function loop() {
+            bgm.currentTime = 0;
+            bgm.play()
+        }
+        bgm.play();
+        playMusic = false;
+    } else {
+        bgm.pause();
+        playMusic = true;
+    }
+}
+
 // game start
 async function startGame() {
 
     // Music player
-    var bgm = document.getElementById("bgm");
-    bgm.addEventListener('ended', function() {
-        loop();
-    }, false);
-
-    function loop() {
-        bgm.currentTime = 0;
-        bgm.play()
-    }
-
-    bgm.addEventListener('canplay', function() {
-        bgm.play();
-    }, false);
-
-    bgm.play();
+    musicPlayer();
     
     // Initialize renderer
     const renderer = new LambertRenderer(canvas);
