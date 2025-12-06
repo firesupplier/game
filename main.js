@@ -40,6 +40,8 @@ import { Physics } from './core/Physics.js';
 
 const startScreen = document.getElementById("start-screen");
 const startBtn = document.getElementById("start-btn");
+const endScreen = document.getElementById("end-screen");
+const restartBtn = document.getElementById("restart-btn");
 const canvas = document.querySelector("canvas");
 
 canvas.style.display = "none";
@@ -50,6 +52,7 @@ startBtn.addEventListener("click", () => {
     clickSound.currentTime = 0; 
     clickSound.play();
     startScreen.style.display = "none";
+    endScreen.style.display = "none";
     canvas.style.display = "block";
     startGame();
 });
@@ -81,8 +84,31 @@ function musicPlayer() {
     }
 }
 
+
+restartBtn.addEventListener("click", () => {
+    clickSound.currentTime = 0;
+    clickSound.play();
+
+    setTimeout(() => {
+        window.location.reload();
+    }, 150);
+});
+
+
+let gameEnded = false;
+let updateSystem;
+
+function endGame() {
+    gameEnded = true;
+    startScreen.style.display = "none";   
+    canvas.style.display = "none";
+    endScreen.style.display = "flex";
+}
+
 // game start
 async function startGame() {
+    let elapsedTime = 0; // seconds
+    const gameDuration = 5; // end game after 60 seconds
 
     // Music player
     musicPlayer();
@@ -235,6 +261,20 @@ for (const entity of scene) {
 
     // Update loop
     function update(t, dt) {
+
+        console.log("update called", { t, dt, elapsedTime }); // add this
+
+        if (gameEnded) {
+            updateSystem?.stop(); // stop update loop entirely
+            return;
+        }
+
+        elapsedTime += dt;
+        if (elapsedTime >= gameDuration) {
+            endGame();
+            return;
+        }
+
         for (const entity of scene) {
             for (const component of entity.components) {
                 component.update?.(t, dt);
@@ -254,7 +294,9 @@ for (const entity of scene) {
 
     // Render loop
     function render() {
-        renderer.render(scene, camera);
+        if (!gameEnded) {
+            renderer.render(scene, camera);
+        }
     }
 
     // Resize handling
@@ -262,6 +304,8 @@ for (const entity of scene) {
         camera.getComponentOfType(Camera).aspect = width / height;
     }
 
+    updateSystem = new UpdateSystem({ update, render });
     new ResizeSystem({ canvas, resize }).start();
-    new UpdateSystem({ update, render }).start();
+    updateSystem.start();
 }
+
