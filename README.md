@@ -14,6 +14,8 @@ Changelog: 6.12.2025
 3. Added dialogueMaster.js (meant for writing all the dialogue inside)
 4. Updates to the character controler (to do with dialogue)
 
+5. Added simple collision detection (za ga popravit oziroma prilagodit sceno)
+
 Controls:
 1. Enter --> Continue the dialogue, or make it show up for the first time. You close it by finishing the dialogue.
 2. WASD --> premikanje

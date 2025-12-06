@@ -27,6 +27,13 @@ import { CharacterController } from './controllers/CharacterController.js';
 
 import {showHUD, showDialogue, closeHUD} from './hud/showHUD.js'
 
+import {
+    calculateAxisAlignedBoundingBox,
+    mergeAxisAlignedBoundingBoxes,
+} from './core/MeshUtils.js';
+
+import { Physics } from './core/Physics.js';
+
 // starting screen
 
 const startScreen = document.getElementById("start-screen");
@@ -97,7 +104,47 @@ character.addComponent(new Model({
     ],
 }));
 character.addComponent(new CharacterController(character, canvas, camera));
+character.aabb = {
+    min: [-0.2, -0.2, -0.2],
+    max: [0.2, 0.2, 0.2],
+};
 scene.push(character);
+
+const kockaMesh = await loaderOBJ.load(new URL('./assets/models/kocka.obj', import.meta.url));
+const kockaTekstura = await loaderImage.load(new URL('./assets/models/tekstura.png', import.meta.url));
+const kocka = new Entity();
+kocka.addComponent(new Transform({
+    translation: [-10, 0, -5],
+}));
+kocka.addComponent(new Model({
+    primitives: [
+        new Primitive({
+            mesh: kockaMesh,
+            material: new Material({
+                baseTexture: new Texture({
+                    image: kockaTekstura,
+                    sampler: new Sampler,
+                })
+            })
+        })
+    ]
+}));
+kocka.aabb = {
+    min: [-0.2, -0.2, -0.2],
+    max: [0.2, 0.2, 0.2],
+};
+scene.push(kocka);
+
+const physics = new Physics(scene);
+for (const entity of scene) {
+    const model = entity.getComponentOfType(Model);
+    if (!model) {
+        continue;
+    }
+
+    const boxes = model.primitives.map(primitive => calculateAxisAlignedBoundingBox(primitive.mesh));
+    entity.aabb = mergeAxisAlignedBoundingBoxes(boxes);
+}
 
     // Update loop
     function update(t, dt) {
@@ -106,6 +153,7 @@ scene.push(character);
                 component.update?.(t, dt);
             }
         }
+        physics.update(t, dt);
     }
 
     // Render loop
