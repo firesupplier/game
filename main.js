@@ -39,6 +39,8 @@ import { Physics } from './core/Physics.js';
 
 const startScreen = document.getElementById("start-screen");
 const startBtn = document.getElementById("start-btn");
+const endScreen = document.getElementById("end-screen");
+const restartBtn = document.getElementById("restart-btn");
 const canvas = document.querySelector("canvas");
 
 canvas.style.display = "none";
@@ -49,29 +51,53 @@ startBtn.addEventListener("click", () => {
     clickSound.currentTime = 0; 
     clickSound.play();
     startScreen.style.display = "none";
+    endScreen.style.display = "none";
     canvas.style.display = "block";
     startGame();
 });
 
+restartBtn.addEventListener("click", () => {
+    clickSound.currentTime = 0;
+    clickSound.play();
+
+    setTimeout(() => {
+        window.location.reload();
+    }, 150);
+});
+
+
+let gameEnded = false;
+let updateSystem;
+
+function endGame() {
+    gameEnded = true;
+    startScreen.style.display = "none";   // ensure start screen stays hidden
+    canvas.style.display = "none";
+    endScreen.style.display = "flex";
+}
+
 // game start
 async function startGame() {
+    let elapsedTime = 0; // seconds
+    const gameDuration = 5; // end game after 60 seconds
 
-    // Music player
-    var bgm = document.getElementById("bgm");
-    bgm.addEventListener('ended', function() {
-        loop();
-    }, false);
+    
+    // // Music player
+    // var bgm = document.getElementById("bgm");
+    // bgm.addEventListener('ended', function() {
+    //     loop();
+    // }, false);
 
-    function loop() {
-        bgm.currentTime = 0;
-        bgm.play()
-    }
+    // function loop() {
+    //     bgm.currentTime = 0;
+    //     bgm.play()
+    // }
 
-    bgm.addEventListener('canplay', function() {
-        bgm.play();
-    }, false);
+    // bgm.addEventListener('canplay', function() {
+    //     bgm.play();
+    // }, false);
 
-    bgm.play();
+    // bgm.play();
     
     // Initialize renderer
     const renderer = new LambertRenderer(canvas);
@@ -139,6 +165,7 @@ async function startGame() {
     character.addComponent(new Transform({
         translation: [0, 0, -5],
     }));
+    
     character.addComponent(new Model({
         primitives: [
             new Primitive({
@@ -153,7 +180,17 @@ async function startGame() {
         ],
     }));
     character.addComponent(new CharacterController(character, canvas, camera));
+    character.addComponent(new Character());
+    character.aabb = {
+        min: [-0.2, -0.2, -0.2],
+        max: [0.2, 0.2, 0.2],
+    };
     scene.push(character);
+
+
+
+
+
 
 const kockaMesh = await loaderOBJ.load(new URL('./assets/models/kocka.obj', import.meta.url));
 const kockaTekstura = await loaderImage.load(new URL('./assets/models/tekstura.png', import.meta.url));
@@ -193,6 +230,20 @@ for (const entity of scene) {
 
     // Update loop
     function update(t, dt) {
+            console.log("update called", { t, dt, elapsedTime }); // add this
+
+
+        if (gameEnded) {
+            updateSystem?.stop(); // stop update loop entirely
+            return;
+        }
+
+        elapsedTime += dt;
+        if (elapsedTime >= gameDuration) {
+            endGame();
+            return;
+        }
+
         for (const entity of scene) {
             for (const component of entity.components) {
                 component.update?.(t, dt);
@@ -212,7 +263,9 @@ for (const entity of scene) {
 
     // Render loop
     function render() {
-        renderer.render(scene, camera);
+        if (!gameEnded) {
+            renderer.render(scene, camera);
+        }
     }
 
     // Resize handling
@@ -220,6 +273,8 @@ for (const entity of scene) {
         camera.getComponentOfType(Camera).aspect = width / height;
     }
 
+    updateSystem = new UpdateSystem({ update, render });
     new ResizeSystem({ canvas, resize }).start();
-    new UpdateSystem({ update, render }).start();
+    updateSystem.start();
 }
+
