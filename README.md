@@ -20,6 +20,8 @@ Changelog: 6.12.2025
 6. Small update to index.html (to do with music)
 7. Added looping music to main.js
 
+8. Osnovni pickup
+
 Controls:
 1. Enter --> Continue the dialogue, or make it show up for the first time. You close it by finishing the dialogue.
 2. WASD --> premikanje
