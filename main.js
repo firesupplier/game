@@ -1,6 +1,7 @@
 import { quat, mat4 } from './gl-matrix-module.js';
 import { 
     Camera,
+    Character,
     Entity,
     Light,
     Transform,
@@ -27,6 +28,13 @@ import { CharacterController } from './controllers/CharacterController.js';
 
 import {showHUD, showDialogue, closeHUD} from './hud/showHUD.js'
 
+import {
+    calculateAxisAlignedBoundingBox,
+    mergeAxisAlignedBoundingBoxes,
+} from './core/MeshUtils.js';
+
+import { Physics } from './core/Physics.js';
+
 // starting screen
 
 const startScreen = document.getElementById("start-screen");
@@ -48,6 +56,23 @@ startBtn.addEventListener("click", () => {
 // game start
 async function startGame() {
 
+    // Music player
+    var bgm = document.getElementById("bgm");
+    bgm.addEventListener('ended', function() {
+        loop();
+    }, false);
+
+    function loop() {
+        bgm.currentTime = 0;
+        bgm.play()
+    }
+
+    bgm.addEventListener('canplay', function() {
+        bgm.play();
+    }, false);
+
+    bgm.play();
+    
     // Initialize renderer
     const renderer = new LambertRenderer(canvas);
     await renderer.initialize();
@@ -130,6 +155,42 @@ async function startGame() {
     character.addComponent(new CharacterController(character, canvas, camera));
     scene.push(character);
 
+const kockaMesh = await loaderOBJ.load(new URL('./assets/models/kocka.obj', import.meta.url));
+const kockaTekstura = await loaderImage.load(new URL('./assets/models/tekstura.png', import.meta.url));
+const kocka = new Entity();
+kocka.addComponent(new Transform({
+    translation: [-10, 0, -5],
+}));
+kocka.addComponent(new Model({
+    primitives: [
+        new Primitive({
+            mesh: kockaMesh,
+            material: new Material({
+                baseTexture: new Texture({
+                    image: kockaTekstura,
+                    sampler: new Sampler,
+                })
+            })
+        })
+    ]
+}));
+kocka.aabb = {
+    min: [-0.2, -0.2, -0.2],
+    max: [0.2, 0.2, 0.2],
+};
+scene.push(kocka);
+
+const physics = new Physics(scene);
+for (const entity of scene) {
+    const model = entity.getComponentOfType(Model);
+    if (!model) {
+        continue;
+    }
+
+    const boxes = model.primitives.map(primitive => calculateAxisAlignedBoundingBox(primitive.mesh));
+    entity.aabb = mergeAxisAlignedBoundingBoxes(boxes);
+}
+
     // Update loop
     function update(t, dt) {
         for (const entity of scene) {
@@ -146,6 +207,7 @@ async function startGame() {
                 light.color = light.baseColor.map(c => c * intensity);
             }
         }
+        physics.update(t, dt);
     }
 
     // Render loop

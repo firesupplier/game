@@ -1,6 +1,7 @@
 import { quat, vec3, mat4 } from '../gl-matrix-module.js';
 
 import { Transform } from '../core/Transform.js';
+import { Character } from '../core/Character.js';
 
 export class CharacterController {
 
@@ -30,7 +31,7 @@ export class CharacterController {
     }
 
     initHandlers() {
-        this.pointermoveHandler = this.pointermoveHandler.bind(this);
+        //this.pointermoveHandler = this.pointermoveHandler.bind(this);
         this.keydownHandler = this.keydownHandler.bind(this);
         this.keyupHandler = this.keyupHandler.bind(this);
 
@@ -59,16 +60,17 @@ export class CharacterController {
 
         // Map user input to the acceleration vector.
         const acc = vec3.create();
-        if (this.keys['KeyS']) {
+        const inDialogue = window.hudManager.getDialogueValue(); // Checks if in dialogue and if so prevents movement
+        if (this.keys['KeyS'] && !inDialogue) {
             vec3.add(acc, acc, forward);
         }
-        if (this.keys['KeyW']) {
+        if (this.keys['KeyW'] && !inDialogue) {
             vec3.sub(acc, acc, forward);
         }
-        if (this.keys['KeyA']) {
+        if (this.keys['KeyA'] && !inDialogue) {
             vec3.add(acc, acc, right);
         }
-        if (this.keys['KeyD']) {
+        if (this.keys['KeyD'] && !inDialogue) {
             vec3.sub(acc, acc, right);
         }
         
@@ -77,10 +79,10 @@ export class CharacterController {
         vec3.scaleAndAdd(this.velocity, this.velocity, acc, dt * this.acceleration);
 
         // If there is no user input, apply decay.
-        if (!this.keys['KeyW'] &&
+        if ((!this.keys['KeyW'] &&
             !this.keys['KeyS'] &&
             !this.keys['KeyD'] &&
-            !this.keys['KeyA'])
+            !this.keys['KeyA']) || inDialogue)
         {
             const decay = Math.exp(dt * Math.log(1 - this.decay));
             vec3.scale(this.velocity, this.velocity, decay);
@@ -93,32 +95,21 @@ export class CharacterController {
         }
 
         const transform = this.entity.getComponentOfType(Transform);
+        const colliding = this.entity.getComponentOfType(Character).colliding;
         const transCamera = this.camera.getComponentOfType(Transform);
         if (transform) {
             // Update translation based on velocity.
             vec3.scaleAndAdd(transform.translation,
                 transform.translation, this.velocity, dt);
-            
+                        
             //Premika kamero!
-            vec3.scaleAndAdd(transCamera.translation,
-                transCamera.translation, this.velocity, dt);
-            transCamera.translation[2] = -15;
+            if(!colliding){
+                vec3.scaleAndAdd(transCamera.translation,
+                    transCamera.translation, this.velocity, dt);
+                transCamera.translation[2] = -15;
+            }
 
         }
-    }
-
-    pointermoveHandler(e) {
-        //const dx = e.movementX;
-        //const dy = e.movementY;
-
-        //this.pitch -= dy * this.pointerSensitivity;
-        //this.yaw   -= dx * this.pointerSensitivity;
-
-        const twopi = Math.PI * 2;
-        const halfpi = Math.PI / 2;
-
-        this.pitch = Math.min(Math.max(this.pitch, -halfpi), halfpi);
-        this.yaw = ((this.yaw % twopi) + twopi) % twopi;
     }
 
     keydownHandler(e) {
@@ -128,5 +119,4 @@ export class CharacterController {
     keyupHandler(e) {
         this.keys[e.code] = false;
     }
-
 }
