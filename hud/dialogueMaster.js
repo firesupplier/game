@@ -10,8 +10,9 @@ export class dialogueMaster{
 
     // ID list for the input reader and dialogueID:
     /*
-        1,2 - Introduction
-        3, 4, 5, 6 - Alchemist: first meeting
+        1,2 - Introduction (Intro)
+        3, 4, 5, 6 - Alchemist: first meeting (Marjorie 1)
+        7 - Isa 1
     */
     updateDialogueCounter() {
         this.dialogueCounter = 0;
@@ -37,8 +38,12 @@ export class dialogueMaster{
                             buttonID: 1
                         },
                         {
-                            text: "Alchemist: first meeting",
+                            text: "Marjorie 1",
                             buttonID: 3
+                        },
+                        {
+                            text: "Isa 1",
+                            buttonID: 7
                         }
                     ]
                     });
@@ -128,7 +133,7 @@ export class dialogueMaster{
 
             // Intro dialogue
             // ---------------------------------------------------------------------------------------------------------------------------------------
-            // Alchemist 1
+            // Marjorie 1
 
             case 3:
                 switch(this.dialogueCounter) {
@@ -297,11 +302,79 @@ export class dialogueMaster{
                         showDialogue("Marjorie", "Heh.");
                         this.dialogueCounter = 4;
                         break;
+                    case 4:
+                        showDialogue("Marjorie", "Nevermind that then! What brings you to my shop?");
+                        this.dialogueCounter = 5;
+                        break;
+                    case 5:
+                        showDialogue("You", "I heard tell that an alchemist in Solimoor is capable of making a Vita Radicata Potion.");
+                        this.dialogueCounter = 6;
+                        break;
+                    case 6:
+                        showDialogue("Marjorie", "Hmmm...");
+                        this.dialogueCounter = 7;
+                        break;
+                    case 7:
+                        showDialogue("Marjorie", "Indeed you heard correctly! And I am that achemist.");
+                        this.dialogueCounter = 8;
+                        break;
+                    case 8:
+                        showDialogue("You", "So, how much will it cost me?");
+                        this.dialogueCounter = 9;
+                        break;
+                    case 9:
+                        showDialogue("Marjorie", "Well, a potion of life is not something that's easy to make.");
+                        this.dialogueCounter = 10;
+                        break;
+                    case 10:
+                        showDialogue("You", "I'm willing to pay any price necesarry.");
+                        this.dialogueCounter = 11;
+                        break;
+                    case 11:
+                        showDialogue("Marjorie", "In that case, I only require the materials.");
+                        this.dialogueCounter = 12;
+                        break;
+                    case 12:
+                        showDialogue("Marjorie", "I need diver fish blood, a small piece of a Root extract and a fargment of a pearl.");
+                        this.dialogueCounter = 13;
+                        break;
+                    case 13:
+                        showDialogue("Marjorie", "You can find the diver fish near the docks.\nThe town nut, Romeo, should have a pearl on his person.\n And you can easily get the Root extract by cutting off a tiny pice of the roots all around town.");
+                        this.dialogueCounter = 14;
+                        break;
+                    case 14:
+                        showDialogue("You", "That sounds too easy. What's the catch?");
+                        this.dialogueCounter = 15;
+                        break;
+                    case 15:
+                        showDialogue("Marjorie", "Well, not everyone can make it! And I would gladly do this kind gesture for you! I mean, you are trying to save someone, are you not?");
+                        this.dialogueCounter = 16;
+                        break;
+                    case 16:
+                        showDialogue("You", "Yes...");
+                        this.dialogueCounter = 17;
+                        break;
+                    case 17:
+                        showDialogue("Marjorie", "Well, in that case we have a deal. Bring me the meterials and I shal make the Vita Radicata Potion.");
+                        this.dialogueCounter = 18;
+                        break;
+                    case 18:
+                        showDialogue("You", "I'll be back soon.");
+                        this.dialogueCounter = 19;
+                        break;
+                    case 19:
+                        showDialogue("Marjorie", "I'm counting on it!");
+                        this.dialogueCounter = 20;
+                        break;
+                    case 20:
+                        this.exitHUD();
+                        break;
                 }
                 break;
 
-            // Alchemist 1    
+            // Marjorie 1    
             // ---------------------------------------------------------------------------------------------------------------------------------------
+            // Isa 1
         }
     }
 }
