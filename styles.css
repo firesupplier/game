@@ -28,8 +28,24 @@ canvas {
     font-size: 1.5rem;
     padding: 1rem 2rem;
     cursor: pointer;
+    background-color: #CAD0C3;
+    color: #000;
+    border: 3px solid #7A8C6D;
+    box-shadow: 4px 4px 0 gray; 
+    letter-spacing: 1px;
+    transition: all 0.1s ease;
 }
 
+#start-screen button:hover {
+    background-color: #A0B090;       
+    box-shadow: 6px 6px 0 #7A8C6D; 
+    transform: translate(-2px, -2px); 
+}
+
+#start-screen button:active {
+    transform: translate(0, 0);      
+    box-shadow: 4px 4px 0 #7A8C6D;  
+}
 
 
 

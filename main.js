@@ -27,25 +27,25 @@ import { CharacterController } from './controllers/CharacterController.js';
 
 import {showHUD, showDialogue, closeHUD} from './hud/showHUD.js'
 
-// --- UI CONTROL -------------------------------------------------------------
+// starting screen
 
 const startScreen = document.getElementById("start-screen");
 const startBtn = document.getElementById("start-btn");
 const canvas = document.querySelector("canvas");
 
-// Hide canvas initially
 canvas.style.display = "none";
+const clickSound = document.getElementById("click-sound");
 
-// On click, hide menu and start the game
+
 startBtn.addEventListener("click", () => {
+    clickSound.currentTime = 0; 
+    clickSound.play();
     startScreen.style.display = "none";
     canvas.style.display = "block";
     startGame();
 });
 
-
-// --- GAME START -------------------------------------------------------------
-
+// game start
 async function startGame() {
 
     // Initialize renderer
