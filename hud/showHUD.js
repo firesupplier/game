@@ -18,10 +18,6 @@ export function showDialogue(title, text, options = {}) {
     return hudManager.showDialogue(title, text, options);
 }
 
-/*export function updateHUD(hudId, text) {
-    hudManager.updateHud(hudId, text);
-}*/
-
 export function closeHUD() {
     hudManager.closeHUD();
 }
