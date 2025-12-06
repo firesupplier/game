@@ -43,6 +43,11 @@ const startBtn = document.getElementById("start-btn");
 const endScreen = document.getElementById("end-screen");
 const restartBtn = document.getElementById("restart-btn");
 const canvas = document.querySelector("canvas");
+const ctrlsBtn = document.getElementById("ctrls-btn");
+const controlsPopUp = document.getElementById("controls");
+const closeCtrlsBtn = document.getElementById("close-ctrls");
+const overlay = document.getElementById("overlay");
+
 
 canvas.style.display = "none";
 const clickSound = document.getElementById("click-sound");
@@ -94,6 +99,23 @@ restartBtn.addEventListener("click", () => {
     }, 150);
 });
 
+ctrlsBtn.addEventListener("click", () => {
+    clickSound.currentTime = 0;
+    clickSound.play();
+    controlsPopUp.style.display = "block";
+    overlay.style.display = "block";
+});
+
+
+closeCtrlsBtn.addEventListener("click", () => {
+    clickSound.currentTime = 0;
+    clickSound.play();
+    controlsPopUp.style.display = "none";
+    overlay.style.display = "none";
+
+});
+
+
 
 let gameEnded = false;
 let updateSystem;
@@ -108,7 +130,7 @@ function endGame() {
 // game start
 async function startGame() {
     let elapsedTime = 0; // seconds
-    const gameDuration = 5; // end game after 60 seconds
+    const gameDuration = 50000; // end game after 60 seconds
 
     // Music player
     musicPlayer();
