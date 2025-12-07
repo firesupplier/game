@@ -252,7 +252,7 @@ pickup.aabb = {
 };
 scene.push(pickup);
 
-const kocka = new Entity();
+/*const kocka = new Entity();
 kocka.addComponent(new Transform({
     translation: [-10, 0, -5],
 }));
@@ -273,7 +273,7 @@ kocka.aabb = {
     min: [-0.2, -0.2, -0.2],
     max: [0.2, 0.2, 0.2],
 };
-scene.push(kocka);
+scene.push(kocka);*/
 
 // Cirkev
 const curchMesh = await loaderOBJ.load(new URL('./assets/models/cirkvica.obj', import.meta.url));
@@ -470,8 +470,34 @@ boardwalk.addComponent(new Model({
         })
     ]
 }));
-
 scene.push(boardwalk);
+
+//Meje
+const mejaTekstura = await loaderImage.load(new URL('./assets/models/mejatekstura.png', import.meta.url));
+const meja = new Entity();
+meja.addComponent(new Transform({
+    translation: [0, -0.7, -8.5],
+    scale: [50, 1, 1],
+}));
+meja.addComponent(new Model({
+    primitives: [
+        new Primitive({
+            mesh: kockaMesh,
+            material: new Material({
+                baseTexture: new Texture({
+                    image: mejaTekstura,
+                    sampler: new Sampler,
+                })
+            })
+        })
+    ]
+}));
+meja.aabb = {
+    min: [-0.2, -0.2, -0.2],
+    max: [0.2, 0.2, 0.2],
+};
+scene.push(meja);
+
 
 const physics = new Physics(scene);
 for (const entity of scene) {

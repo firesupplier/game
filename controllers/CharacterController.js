@@ -107,18 +107,13 @@ export class CharacterController {
             vec3.scaleAndAdd(transform.translation,
                 transform.translation, this.velocity, dt);
             
-            //this.entity.components[1].primitives[0].mesh.vertices[0].position
             //Premika kamero!
-            /*if(!colliding){
-                vec3.scaleAndAdd(transCamera.translation,
-                    transCamera.translation, this.velocity, dt);
-                transCamera.translation[2] = -15;
-            }*/
             transCamera.translation[0] = 
                 offset[0] + transVerPosX;
         }
 
-        
+        //console.log(transVerPosX + ', ' + transVerPosY);
+
         for(let i = 0; i < this.entity.components[2].npcLocation.length; i++){
             var locationNPC = this.entity.components[2].npcLocation[i]
             if(transVerPosX>locationNPC[0]-1 && transVerPosX<locationNPC[0]+1 && transVerPosY>locationNPC[2]-1&&transVerPosY<locationNPC[2]+1){
