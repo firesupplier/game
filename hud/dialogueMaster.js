@@ -1,4 +1,5 @@
-import {showHUD, showDialogue, closeHUD, setDialogueId} from './showHUD.js'
+import {showHUD, showDialogue, closeHUD, setDialogueId, setEndGame} from './showHUD.js'
+import Character from '../core/Character.js'
 
 export class dialogueMaster{
 
@@ -21,7 +22,11 @@ export class dialogueMaster{
         13 - Carlos Final Good
         14 - Carlos Final Bad
         15 - Romeo 1
-        16 - Marmaid 1
+        16, 17, 18, 19 - Marmaid 1
+
+        20 - Root Extract
+        21 - Diver Fish
+        22 - Scarfish
     */
     updateDialogueCounter() {
         this.dialogueCounter = 0;
@@ -920,6 +925,7 @@ export class dialogueMaster{
                         break;
                     case 52:
                         this.exitHUD();
+                        setEndGame(1);
                         break;
                 }
                 break;
@@ -1040,6 +1046,7 @@ export class dialogueMaster{
                         break;
                     case 27:
                         this.exitHUD();
+                        setEndGame(2);
                         break;
                 }
                 break;
@@ -1135,6 +1142,11 @@ export class dialogueMaster{
                         this.dialogueCounter = 21;
                         break;
                     case 21:
+                        showDialogue("", "You have aquired a Pearl.");
+                        this.dialogueCounter = 22;
+                        Character.addItem("Pearl");
+                        break;
+                    case 22:
                         this.exitHUD();
                         break;
                 }
@@ -1360,6 +1372,48 @@ export class dialogueMaster{
                         break;
                 }
                 break;
+            case 20:
+                switch(this.dialogueCounter) {
+                    case 0:
+                        showDialogue("", "You have aquired a Root Extract.");
+                        Character.addItem("RootE");
+                        this.dialogueCounter = 1;
+                        break;
+                    case 1:
+                        this.exitHUD();
+                        break;
+                }
+                break;
+            case 21:
+                switch(this.dialogueCounter) {
+                    case 0:
+                        showDialogue("", "You have aquired a Diver Fish.");
+                        Character.addItem("DFish");
+                        this.dialogueCounter = 1;
+                        break;
+                    case 1:
+                        this.exitHUD();
+                        break;
+                }
+                break;
+            case 22:
+                switch(this.dialogueCounter) {
+                    case 0:
+                        showDialogue("", "You have aquired a Scarfish.");
+                        Character.addItem("SFish");
+                        this.dialogueCounter = 1;
+                        break;
+                    case 1:
+                        this.exitHUD();
+                        break;
+                }
+                break;
+
+/*
+20 - Root Extract
+21 - Diver Fish
+22 - Scarfish
+*/
         }
     }
 }
