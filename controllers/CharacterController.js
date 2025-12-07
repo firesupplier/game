@@ -97,22 +97,36 @@ export class CharacterController {
         const transform = this.entity.getComponentOfType(Transform);
         const colliding = this.entity.getComponentOfType(Character).colliding;
         const transCamera = this.camera.getComponentOfType(Transform);
+
+        const offset = [-2.8, 5.3, -14.2];
+        const verticePos = this.entity.components[1].primitives[0].mesh.vertices[0].position;
+        const transVerPosX = verticePos[0] + transform.translation[0];
+        const transVerPosY = verticePos[2] + transform.translation[2];
         if (transform) {
             // Update translation based on velocity.
             vec3.scaleAndAdd(transform.translation,
                 transform.translation, this.velocity, dt);
             
             //this.entity.components[1].primitives[0].mesh.vertices[0].position
-            console.log(transform.translation);
+            //console.log(transform.translation);
             //Premika kamero!
             /*if(!colliding){
                 vec3.scaleAndAdd(transCamera.translation,
                     transCamera.translation, this.velocity, dt);
                 transCamera.translation[2] = -15;
             }*/
-            const offset = [-2.8, 5.3, -14.2];
             transCamera.translation[0] = 
-                offset[0] + this.entity.components[1].primitives[0].mesh.vertices[0].position[0] + transform.translation[0];
+                offset[0] + transVerPosX;
+        }
+
+        
+        for(let i = 0; i < this.entity.components[2].npcLocation.length; i++){
+            var locationNPC = this.entity.components[2].npcLocation[i]
+            if(transVerPosX>locationNPC[0]-1 && transVerPosX<locationNPC[0]+1 && transVerPosY>locationNPC[2]-1&&transVerPosY<locationNPC[2]+1){
+                this.entity.components[2].isNearNPC[i] = true;
+            } else {
+                this.entity.components[2].isNearNPC[i] = false;
+            }
         }
     }
 

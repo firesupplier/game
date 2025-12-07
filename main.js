@@ -122,13 +122,13 @@ gameCtrlsBtn.addEventListener("click", () => {
 let gameEnded = false;
 let updateSystem;
 
-function endGame() {
+/*function endGame() {
     musicPlayer();
     gameEnded = true;
     startScreen.style.display = "none";   
     canvas.style.display = "none";
     endScreen.style.display = "flex";
-}
+}*/
 
 // game start
 async function startGame() {
@@ -220,7 +220,7 @@ async function startGame() {
     character.addComponent(new CharacterController(character, canvas, camera));
     scene.push(character);
 
-    console.log(character.components[1].primitives[0].mesh.vertices[0].position);
+    //console.log(character.components[1].primitives[0].mesh.vertices[0].position);
 
 const kockaMesh = await loaderOBJ.load(new URL('./assets/models/kocka.obj', import.meta.url));
 const kockaTekstura = await loaderImage.load(new URL('./assets/models/tekstura.png', import.meta.url));
@@ -288,9 +288,9 @@ for (const entity of scene) {
     // Update loop
     function update(t, dt) {
 
-        console.log("update called", { t, dt, elapsedTime }); // add this
+        //console.log("update called", { t, dt, elapsedTime }); // add this
 
-        if (gameEnded) {
+        /*if (gameEnded) {
             updateSystem?.stop(); // stop update loop entirely
             return;
         }
@@ -299,7 +299,7 @@ for (const entity of scene) {
         if (elapsedTime >= gameDuration) {
             endGame();
             return;
-        }
+        }*/
 
         for (const entity of scene) {
             for (const component of entity.components) {
