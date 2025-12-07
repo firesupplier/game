@@ -21,7 +21,6 @@ import { ImageLoader } from './loaders/ImageLoader.js';
 import { ResizeSystem } from './systems/ResizeSystem.js';
 import { UpdateSystem } from './systems/UpdateSystem.js';
 
-import { UnlitRenderer } from './renderers/UnlitRenderer.js';
 import { LambertRenderer } from './renderers/LambertRenderer.js';
 
 import { FirstPersonController } from './controllers/FirstPersonController.js';
