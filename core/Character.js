@@ -8,15 +8,15 @@ export class Character {
         1 -> NPC 2
         */
         npcLocation = [
-            [0, 0, -3], // Carlos
-            [5, 0, -3], // Marjorie
-            [10, 0, -3], // Isa
-            [15, 0, -3], // Romeo
-            [20, 0, -3], // Mermaid
+            [21, 2, -4.3], // Carlos
+            [-17.12, 2, -0.84], // Marjorie
+            [-9.25, 2, 0.86], // Isa
+            [3, 2, 0], // Romeo
+            [-22.42, 0, -4.46], // Mermaid
 
-            [-20, 0, -3], // Root Extract
-            [-25, 0, -3], // Diver Fish
-            [-30, 0, -3], // Scarfish
+            [8.69, 0, -1.22], // Root Extract
+            [-2.68, 0, -0.82], // Diver Fish
+            [-2.68, 0, -4.49], // Scarfish
         ],
         isNearNPC = [false, false, false, false, false, false, false, false],
     } = {}) {
