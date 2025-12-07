@@ -356,6 +356,60 @@ scene.push(Mar);
 
 // ---------------------------------------------------------------------------------------------------------
 
+const barrel1Mesh = await loaderOBJ.load(new URL('./assets/models/BARREL.obj', import.meta.url));
+
+const barrel1 = new Entity();
+barrel1.addComponent(new Transform({
+    translation: [-7.68, 2, -5.49],  // dx - levo desno, y gor dol, z naprej nazaj
+    scale: [1, 1, 1],
+
+}));
+barrel1.addComponent(new Model({
+    primitives: [
+        new Primitive({
+            mesh: barrel1Mesh,
+            material: new Material({
+                baseTexture: new Texture({
+                    image: characterTekstura,
+                    sampler: new Sampler,
+                })
+            })
+        })
+    ]
+}));
+barrel1.aabb = {
+    min: [-0.2, -0.2, -0.2],
+    max: [0.2, 0.2, 0.2],
+};
+scene.push(barrel1);
+
+const barrel2Mesh = await loaderOBJ.load(new URL('./assets/models/BARREL.obj', import.meta.url));
+
+const barrel2 = new Entity();
+barrel2.addComponent(new Transform({
+    translation: [-2.68, 2, -5.49],  // dx - levo desno, y gor dol, z naprej nazaj
+    scale: [1, 1, 1],
+
+}));
+barrel2.addComponent(new Model({
+    primitives: [
+        new Primitive({
+            mesh: barrel2Mesh,
+            material: new Material({
+                baseTexture: new Texture({
+                    image: characterTekstura,
+                    sampler: new Sampler,
+                })
+            })
+        })
+    ]
+}));
+barrel2.aabb = {
+    min: [-0.2, -0.2, -0.2],
+    max: [0.2, 0.2, 0.2],
+};
+scene.push(barrel2);
+
 const kockaMesh = await loaderOBJ.load(new URL('./assets/models/kocka.obj', import.meta.url));
 const kockaTekstura = await loaderImage.load(new URL('./assets/models/tekstura.png', import.meta.url));
 
