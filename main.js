@@ -61,7 +61,8 @@ startBtn.addEventListener("click", () => {
     clickSound.currentTime = 0; 
     clickSound.play();
     startScreen.style.display = "none";
-    endScreen.style.display = "none";
+    endScreenBad.style.display = "none";
+    endScreenGood.style.display = "none";
     canvas.style.display = "block";
     startGame();
 });
