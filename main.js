@@ -218,7 +218,7 @@ async function startGame() {
     const characterTekstura = await loaderImage.load(new URL('./assets/models/tekstura.png', import.meta.url));
     const character = new Entity();
     character.addComponent(new Transform({
-        translation: [0, 0, -5],
+        translation: [19, 2, -4],
         scale: [0.3, 0.3, 0.3],
     }));
     character.addComponent(new Model({
@@ -238,6 +238,124 @@ async function startGame() {
     character.addComponent(new CharacterController(character, canvas, camera));
     scene.push(character);
 
+
+// ---------------------------------------------------------------------------------------------------------
+// NPCs
+const CarlosMesh = await loaderOBJ.load(new URL('./assets/models/mc2.obj', import.meta.url));
+
+const Carlos = new Entity();
+Carlos.addComponent(new Transform({
+    translation: [21, 2, -4.3],  // dx - levo desno, y gor dol, z naprej nazaj
+    scale: [0.3, 0.3, 0.3],
+
+}));
+Carlos.addComponent(new Model({
+    primitives: [
+        new Primitive({
+            mesh: CarlosMesh,
+            material: new Material({
+                baseTexture: new Texture({
+                    image: characterTekstura,
+                    sampler: new Sampler,
+                })
+            })
+        })
+    ]
+}));
+Carlos.aabb = {
+    min: [-0.2, -0.2, -0.2],
+    max: [0.2, 0.2, 0.2],
+};
+scene.push(Carlos);
+
+// ---------------------------------------------------------
+
+const RomeoMesh = await loaderOBJ.load(new URL('./assets/models/mc2.obj', import.meta.url));
+
+const Romeo = new Entity();
+Romeo.addComponent(new Transform({
+    translation: [3, 2, 0],  // dx - levo desno, y gor dol, z naprej nazaj
+    scale: [0.3, 0.3, 0.3],
+
+}));
+Romeo.addComponent(new Model({
+    primitives: [
+        new Primitive({
+            mesh: RomeoMesh,
+            material: new Material({
+                baseTexture: new Texture({
+                    image: characterTekstura,
+                    sampler: new Sampler,
+                })
+            })
+        })
+    ]
+}));
+Romeo.aabb = {
+    min: [-0.2, -0.2, -0.2],
+    max: [0.2, 0.2, 0.2],
+};
+scene.push(Romeo);
+
+// ---------------------------------------------------------
+
+const IsaMesh = await loaderOBJ.load(new URL('./assets/models/mc2.obj', import.meta.url));
+
+const Isa = new Entity();
+Isa.addComponent(new Transform({
+    translation: [-9.25, 2, 0.86],  // dx - levo desno, y gor dol, z naprej nazaj
+    scale: [0.3, 0.3, 0.3],
+
+}));
+Isa.addComponent(new Model({
+    primitives: [
+        new Primitive({
+            mesh: IsaMesh,
+            material: new Material({
+                baseTexture: new Texture({
+                    image: characterTekstura,
+                    sampler: new Sampler,
+                })
+            })
+        })
+    ]
+}));
+Isa.aabb = {
+    min: [-0.2, -0.2, -0.2],
+    max: [0.2, 0.2, 0.2],
+};
+scene.push(Isa);
+
+// ---------------------------------------------------------
+
+const MarMesh = await loaderOBJ.load(new URL('./assets/models/mc2.obj', import.meta.url));
+
+const Mar = new Entity();
+Mar.addComponent(new Transform({
+    translation: [-17.12, 2, -0.84],  // dx - levo desno, y gor dol, z naprej nazaj
+    scale: [0.3, 0.3, 0.3],
+
+}));
+Mar.addComponent(new Model({
+    primitives: [
+        new Primitive({
+            mesh: MarMesh,
+            material: new Material({
+                baseTexture: new Texture({
+                    image: characterTekstura,
+                    sampler: new Sampler,
+                })
+            })
+        })
+    ]
+}));
+Mar.aabb = {
+    min: [-0.2, -0.2, -0.2],
+    max: [0.2, 0.2, 0.2],
+};
+scene.push(Mar);
+
+// ---------------------------------------------------------------------------------------------------------
 
 const kockaMesh = await loaderOBJ.load(new URL('./assets/models/kocka.obj', import.meta.url));
 const kockaTekstura = await loaderImage.load(new URL('./assets/models/tekstura.png', import.meta.url));
