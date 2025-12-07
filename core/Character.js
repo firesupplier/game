@@ -8,10 +8,17 @@ export class Character {
         1 -> NPC 2
         */
         npcLocation = [
-            [0, 0, 0],
-            [-20, 0, -5]
+            [0, 0, -3], // Carlos
+            [5, 0, -3], // Marjorie
+            [10, 0, -3], // Isa
+            [15, 0, -3], // Romeo
+            [20, 0, -3], // Mermaid
+
+            [-20, 0, -3], // Root Extract
+            [-25, 0, -3], // Diver Fish
+            [-30, 0, -3], // Scarfish
         ],
-        isNearNPC = [false, false],
+        isNearNPC = [false, false, false, false, false, false, false, false],
     } = {}) {
         this.colliding = colliding;
         this.pickups = pickups;
@@ -25,6 +32,10 @@ export class Character {
 
     getInventory() {
         return this.pickups;
+    }
+
+    getNPCCloseness() {
+        return this.isNearNPC;
     }
 
 }

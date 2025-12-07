@@ -164,14 +164,14 @@ async function startGame() {
     // Lights in the scene -> three (we can have max 4)
 
     // first light
-    const light = new Entity();
-    light.addComponent(new Light({
-        color: [20/255, 0, 200/255], // lights are normalised so its works better?
-        direction: [-50, 3, -5],
-        blinking: false,
-        baseColor: [20/255,0,200/255],
-    }));
-    scene.push(light);
+    // const light = new Entity();
+    // light.addComponent(new Light({
+    //     color: [20/255, 200/255, 20/255], // lights are normalised so its works better?
+    //     direction: [-50, 3, -5],
+    //     blinking: false,
+    //     baseColor: [20/255,0,200/255],
+    // }));
+    // scene.push(light);
 
     // second light
     const light2 = new Entity();
@@ -277,13 +277,13 @@ kocka.aabb = {
 scene.push(kocka);*/
 
 // Cirkev
-const curchMesh = await loaderOBJ.load(new URL('./assets/models/cirkvica.obj', import.meta.url));
+const curchMesh = await loaderOBJ.load(new URL('./assets/models/cirkvica2.obj', import.meta.url));
 const curchTekstura = await loaderImage.load(new URL('./assets/models/tekstura.png', import.meta.url));
 
 const curch = new Entity();
 curch.addComponent(new Transform({
-    translation: [-5, 0, -5],
-    scale: [1.5, 1.5, 1.5],
+    translation: [5, 1, -7],  // dx - levo desno, y gor dol, z naprej nazaj
+    scale: [2, 2, 2],
 
 }));
 curch.addComponent(new Model({
@@ -311,8 +311,8 @@ const wellTekstura = await loaderImage.load(new URL('./assets/models/tekstura.pn
 
 const well = new Entity();
 well.addComponent(new Transform({
-    translation: [10, 2, -2],
-    scale: [2, 2, 2],
+    translation: [-25, 2, -3],
+    scale: [2.5, 2.5, 2.5],
 
 }));
 well.addComponent(new Model({
@@ -340,8 +340,8 @@ const tallTekstura = await loaderImage.load(new URL('./assets/models/tekstura.pn
 
 const tall = new Entity();
 tall.addComponent(new Transform({
-    translation: [-20, 2, 5],
-    scale: [1, 1, 1],
+    translation: [-18, 3, 3],
+    scale: [2.5, 2.5, 2.5],
 
 }));
 tall.addComponent(new Model({
@@ -363,14 +363,14 @@ tall.aabb = {
 };
 scene.push(tall);
 
-// mini bajta
+//mini bajta
 const miniMesh = await loaderOBJ.load(new URL('./assets/models/mini.obj', import.meta.url));
 const miniTekstura = await loaderImage.load(new URL('./assets/models/tekstura.png', import.meta.url));
 
 const mini = new Entity();
 mini.addComponent(new Transform({
-    translation: [-10, 3, -2],
-    scale: [2, 2, 2],
+    translation: [-4, 4, 1],
+    scale: [3, 3, 3],
 
 }));
 mini.addComponent(new Model({
@@ -392,41 +392,17 @@ mini.aabb = {
 };
 scene.push(mini);
 
-// // mini bajta 2 
-// const miniMesh2 = await loaderOBJ.load(new URL('./assets/models/mini2.obj', import.meta.url));
-// const miniTekstura2 = await loaderImage.load(new URL('./assets/models/tekstura.png', import.meta.url));
 
-// const mini2 = new Entity();
-// mini2.addComponent(new Transform({
-//     translation: [8, 3, -2],
-//     scale: [2, 2, 2],
-
-// }));
-// mini2.addComponent(new Model({
-//     primitives: [
-//         new Primitive({
-//             mesh: miniMesh,
-//             material: new Material({
-//                 baseTexture: new Texture({
-//                     image: miniTekstura2,
-//                     sampler: new Sampler,
-//                 })
-//             })
-//         })
-//     ]
-// }));
-
-// scene.push(mini2);
 
 
 // bajta 
-const bajtaMesh = await loaderOBJ.load(new URL('./assets/models/bajta.obj', import.meta.url));
+const bajtaMesh = await loaderOBJ.load(new URL('./assets/models/bajtica2.obj', import.meta.url));
 const bajtaTekstura = await loaderImage.load(new URL('./assets/models/tekstura.png', import.meta.url));
 
 const bajta = new Entity();
 bajta.addComponent(new Transform({
-    translation: [20, 2.5, -2],
-    scale: [1, 1, 1],
+    translation: [17, 2.5, 3], // x levo desno, gor dol, globina
+    scale: [1.5, 1.5, 1.5],
 
 }));
 bajta.addComponent(new Model({
@@ -448,6 +424,7 @@ bajta.aabb = {
 };
 scene.push(bajta);
 
+
 // Boardwalk 
 const boardWalkMesh = await loaderOBJ.load(new URL('./assets/models/boardwalk.obj', import.meta.url));
 const boardWalkTekstura = await loaderImage.load(new URL('./assets/models/tekstura.png', import.meta.url));
@@ -455,7 +432,7 @@ const boardWalkTekstura = await loaderImage.load(new URL('./assets/models/tekstu
 const boardwalk = new Entity();
 boardwalk.addComponent(new Transform({
     translation: [10, 3, -3],
-    scale: [6, 6, 6],
+    scale: [4, 4, 4],
 
 }));
 boardwalk.addComponent(new Model({

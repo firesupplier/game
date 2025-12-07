@@ -26,5 +26,9 @@ export function setDialogueId(ID) {
     hudManager.setDialogueId(ID);
 }
 
+export function setEndGame(value) {
+    hudManager.setEndGame(value);
+}
+
 // ---------------------------------------------------------------------------------------------
 
