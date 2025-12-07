@@ -473,7 +473,7 @@ export class dialogueMaster{
                         this.dialogueCounter = 5;
                         break;
                     case 5:
-                        showDialogue("Isa", "Oh? Far from it. Marjorie just doesn't know it. You might be able to find her somewhere in town. Though I've no clue where. Tell her I said 'Hi', if you do. And be careful about what you tell her, she is impresively knowledgable.");
+                        showDialogue("Isa", "Oh? Far from it. Marjorie just doesn't know it. You might be able to find her somewhere in town. Though I've no clue where. Tell her I said 'Hi', if you see her. And be careful about what you tell her, she is impresively knowledgable.");
                         this.dialogueCounter = 6;
                         break;
                     case 6:
@@ -1366,3 +1366,4 @@ export class dialogueMaster{
 
 window.dialogueMaster = new dialogueMaster();
 export default window.dialogueMaster;
+
