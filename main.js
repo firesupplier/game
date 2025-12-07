@@ -151,9 +151,8 @@ async function startGame() {
     const scene = loader.loadScene();
     const camera = new Entity();
     camera.addComponent(new Transform({
-        translation: [-2, 8, -15],
+        translation: [-2, 12, -20],
         rotation: [-0.0006866238545626402, 0.9767575263977051, 0.21432319283485413, 0.0031292226631194353],
-
     }));
 
     camera.addComponent(new Camera());
@@ -276,19 +275,7 @@ kocka.aabb = {
 };
 scene.push(kocka);
 
-const physics = new Physics(scene);
-for (const entity of scene) {
-    const model = entity.getComponentOfType(Model);
-    if (!model) {
-        continue;
-    }
-
-    const boxes = model.primitives.map(primitive => calculateAxisAlignedBoundingBox(primitive.mesh));
-    entity.aabb = mergeAxisAlignedBoundingBoxes(boxes);
-}
-
 // Cirkev
-
 const curchMesh = await loaderOBJ.load(new URL('./assets/models/cirkvica.obj', import.meta.url));
 const curchTekstura = await loaderImage.load(new URL('./assets/models/tekstura.png', import.meta.url));
 
@@ -311,7 +298,10 @@ curch.addComponent(new Model({
         })
     ]
 }));
-
+curch.aabb = {
+    min: [-0.2, -0.2, -0.2],
+    max: [0.2, 0.2, 0.2],
+};
 scene.push(curch);
 
 // Vodnjak
@@ -320,7 +310,7 @@ const wellTekstura = await loaderImage.load(new URL('./assets/models/tekstura.pn
 
 const well = new Entity();
 well.addComponent(new Transform({
-    translation: [2, 3, -2],
+    translation: [10, 2, -2],
     scale: [2, 2, 2],
 
 }));
@@ -337,7 +327,10 @@ well.addComponent(new Model({
         })
     ]
 }));
-
+well.aabb = {
+    min: [-0.2, -0.2, -0.2],
+    max: [0.2, 0.2, 0.2],
+};
 scene.push(well);
 
 // Tall bajta
@@ -346,7 +339,7 @@ const tallTekstura = await loaderImage.load(new URL('./assets/models/tekstura.pn
 
 const tall = new Entity();
 tall.addComponent(new Transform({
-    translation: [2, 3, -20],
+    translation: [-20, 2, 5],
     scale: [1, 1, 1],
 
 }));
@@ -363,7 +356,10 @@ tall.addComponent(new Model({
         })
     ]
 }));
-
+tall.aabb = {
+    min: [-0.2, -0.2, -0.2],
+    max: [0.2, 0.2, 0.2],
+};
 scene.push(tall);
 
 // mini bajta
@@ -389,7 +385,10 @@ mini.addComponent(new Model({
         })
     ]
 }));
-
+mini.aabb = {
+    min: [-0.2, -0.2, -0.2],
+    max: [0.2, 0.2, 0.2],
+};
 scene.push(mini);
 
 // // mini bajta 2 
@@ -425,7 +424,7 @@ const bajtaTekstura = await loaderImage.load(new URL('./assets/models/tekstura.p
 
 const bajta = new Entity();
 bajta.addComponent(new Transform({
-    translation: [8, 3, -2],
+    translation: [20, 2.5, -2],
     scale: [1, 1, 1],
 
 }));
@@ -442,12 +441,11 @@ bajta.addComponent(new Model({
         })
     ]
 }));
-
+bajta.aabb = {
+    min: [-0.2, -0.2, -0.2],
+    max: [0.2, 0.2, 0.2],
+};
 scene.push(bajta);
-
-
-
-
 
 // Boardwalk 
 const boardWalkMesh = await loaderOBJ.load(new URL('./assets/models/boardwalk.obj', import.meta.url));
@@ -475,7 +473,16 @@ boardwalk.addComponent(new Model({
 
 scene.push(boardwalk);
 
+const physics = new Physics(scene);
+for (const entity of scene) {
+    const model = entity.getComponentOfType(Model);
+    if (!model) {
+        continue;
+    }
 
+    const boxes = model.primitives.map(primitive => calculateAxisAlignedBoundingBox(primitive.mesh));
+    entity.aabb = mergeAxisAlignedBoundingBoxes(boxes);
+}
 
     // Update loop
     function update(t, dt) {
