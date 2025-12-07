@@ -123,6 +123,7 @@ let gameEnded = false;
 let updateSystem;
 
 function endGame() {
+    musicPlayer();
     gameEnded = true;
     startScreen.style.display = "none";   
     canvas.style.display = "none";
