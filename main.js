@@ -29,6 +29,8 @@ import { CharacterController } from './controllers/CharacterController.js';
 
 import {showHUD, showDialogue, closeHUD} from './hud/showHUD.js'
 
+//import { addGltfModel } from "./helpers/addGltfModel.js"
+
 import {
     calculateAxisAlignedBoundingBox,
     mergeAxisAlignedBoundingBoxes,
@@ -133,10 +135,10 @@ function endGame() {
 // game start
 async function startGame() {
     let elapsedTime = 0; // seconds
-    const gameDuration = 5; // end game after 60 seconds
+    const gameDuration = 5000; // end game after 60 seconds
 
     // Music player
-    musicPlayer();
+    // musicPlayer();
     
     // Initialize renderer
     const renderer = new LambertRenderer(canvas);
@@ -144,7 +146,7 @@ async function startGame() {
 
     // Load GLTF
     const loader = new GLTFLoader();
-    await loader.load(new URL('./assets/models/placeholder_scena/placeholder_scena.gltf', import.meta.url));
+    await loader.load(new URL('./assets/models/placeholder_scena/placeholder_scena1.gltf', import.meta.url));
 
     const scene = loader.loadScene();
     const camera = new Entity();
@@ -220,7 +222,7 @@ async function startGame() {
     character.addComponent(new CharacterController(character, canvas, camera));
     scene.push(character);
 
-    console.log(character.components[1].primitives[0].mesh.vertices[0].position);
+    // console.log(character.components[1].primitives[0].mesh.vertices[0].position);
 
 const kockaMesh = await loaderOBJ.load(new URL('./assets/models/kocka.obj', import.meta.url));
 const kockaTekstura = await loaderImage.load(new URL('./assets/models/tekstura.png', import.meta.url));
@@ -285,10 +287,198 @@ for (const entity of scene) {
     entity.aabb = mergeAxisAlignedBoundingBoxes(boxes);
 }
 
+// Cirkev
+
+const curchMesh = await loaderOBJ.load(new URL('./assets/models/cirkvica.obj', import.meta.url));
+const curchTekstura = await loaderImage.load(new URL('./assets/models/tekstura.png', import.meta.url));
+
+const curch = new Entity();
+curch.addComponent(new Transform({
+    translation: [-5, 0, -5],
+    scale: [1.5, 1.5, 1.5],
+
+}));
+curch.addComponent(new Model({
+    primitives: [
+        new Primitive({
+            mesh: curchMesh,
+            material: new Material({
+                baseTexture: new Texture({
+                    image: curchTekstura,
+                    sampler: new Sampler,
+                })
+            })
+        })
+    ]
+}));
+
+scene.push(curch);
+
+// Vodnjak
+const wellMesh = await loaderOBJ.load(new URL('./assets/models/vodnjak.obj', import.meta.url));
+const wellTekstura = await loaderImage.load(new URL('./assets/models/tekstura.png', import.meta.url));
+
+const well = new Entity();
+well.addComponent(new Transform({
+    translation: [2, 3, -2],
+    scale: [2, 2, 2],
+
+}));
+well.addComponent(new Model({
+    primitives: [
+        new Primitive({
+            mesh: wellMesh,
+            material: new Material({
+                baseTexture: new Texture({
+                    image: wellTekstura,
+                    sampler: new Sampler,
+                })
+            })
+        })
+    ]
+}));
+
+scene.push(well);
+
+// Tall bajta
+const tallMesh = await loaderOBJ.load(new URL('./assets/models/tall.obj', import.meta.url));
+const tallTekstura = await loaderImage.load(new URL('./assets/models/tekstura.png', import.meta.url));
+
+const tall = new Entity();
+tall.addComponent(new Transform({
+    translation: [2, 3, -20],
+    scale: [1, 1, 1],
+
+}));
+tall.addComponent(new Model({
+    primitives: [
+        new Primitive({
+            mesh: tallMesh,
+            material: new Material({
+                baseTexture: new Texture({
+                    image: tallTekstura,
+                    sampler: new Sampler,
+                })
+            })
+        })
+    ]
+}));
+
+scene.push(tall);
+
+// mini bajta
+const miniMesh = await loaderOBJ.load(new URL('./assets/models/mini.obj', import.meta.url));
+const miniTekstura = await loaderImage.load(new URL('./assets/models/tekstura.png', import.meta.url));
+
+const mini = new Entity();
+mini.addComponent(new Transform({
+    translation: [-10, 3, -2],
+    scale: [2, 2, 2],
+
+}));
+mini.addComponent(new Model({
+    primitives: [
+        new Primitive({
+            mesh: miniMesh,
+            material: new Material({
+                baseTexture: new Texture({
+                    image: miniTekstura,
+                    sampler: new Sampler,
+                })
+            })
+        })
+    ]
+}));
+
+scene.push(mini);
+
+// // mini bajta 2 
+// const miniMesh2 = await loaderOBJ.load(new URL('./assets/models/mini2.obj', import.meta.url));
+// const miniTekstura2 = await loaderImage.load(new URL('./assets/models/tekstura.png', import.meta.url));
+
+// const mini2 = new Entity();
+// mini2.addComponent(new Transform({
+//     translation: [8, 3, -2],
+//     scale: [2, 2, 2],
+
+// }));
+// mini2.addComponent(new Model({
+//     primitives: [
+//         new Primitive({
+//             mesh: miniMesh,
+//             material: new Material({
+//                 baseTexture: new Texture({
+//                     image: miniTekstura2,
+//                     sampler: new Sampler,
+//                 })
+//             })
+//         })
+//     ]
+// }));
+
+// scene.push(mini2);
+
+
+// bajta 
+const bajtaMesh = await loaderOBJ.load(new URL('./assets/models/bajta.obj', import.meta.url));
+const bajtaTekstura = await loaderImage.load(new URL('./assets/models/tekstura.png', import.meta.url));
+
+const bajta = new Entity();
+bajta.addComponent(new Transform({
+    translation: [8, 3, -2],
+    scale: [1, 1, 1],
+
+}));
+bajta.addComponent(new Model({
+    primitives: [
+        new Primitive({
+            mesh: bajtaMesh,
+            material: new Material({
+                baseTexture: new Texture({
+                    image: bajtaTekstura,
+                    sampler: new Sampler,
+                })
+            })
+        })
+    ]
+}));
+
+scene.push(bajta);
+
+
+
+
+
+// Boardwalk 
+const boardWalkMesh = await loaderOBJ.load(new URL('./assets/models/boardwalk.obj', import.meta.url));
+const boardWalkTekstura = await loaderImage.load(new URL('./assets/models/tekstura.png', import.meta.url));
+
+const boardwalk = new Entity();
+boardwalk.addComponent(new Transform({
+    translation: [10, 3, -3],
+    scale: [6, 6, 6],
+
+}));
+boardwalk.addComponent(new Model({
+    primitives: [
+        new Primitive({
+            mesh: boardWalkMesh,
+            material: new Material({
+                baseTexture: new Texture({
+                    image: boardWalkTekstura,
+                    sampler: new Sampler,
+                })
+            })
+        })
+    ]
+}));
+
+scene.push(boardwalk);
+
+
+
     // Update loop
     function update(t, dt) {
-
-        console.log("update called", { t, dt, elapsedTime }); // add this
 
         if (gameEnded) {
             updateSystem?.stop(); // stop update loop entirely

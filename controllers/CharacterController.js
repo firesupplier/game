@@ -103,7 +103,6 @@ export class CharacterController {
                 transform.translation, this.velocity, dt);
             
             //this.entity.components[1].primitives[0].mesh.vertices[0].position
-            console.log(transform.translation);
             //Premika kamero!
             /*if(!colliding){
                 vec3.scaleAndAdd(transCamera.translation,
