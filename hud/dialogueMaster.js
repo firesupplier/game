@@ -1055,7 +1055,7 @@ export class dialogueMaster{
                         this.dialogueCounter = 1;
                         break;
                     case 1:
-                        showDialogue("You", "You must me Romeo.");
+                        showDialogue("You", "You must be Romeo.");
                         this.dialogueCounter = 2;
                         break;
                     case 2:
@@ -1366,4 +1366,5 @@ export class dialogueMaster{
 
 window.dialogueMaster = new dialogueMaster();
 export default window.dialogueMaster;
+
 
