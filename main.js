@@ -42,8 +42,10 @@ import { Physics } from './core/Physics.js';
 
 const startScreen = document.getElementById("start-screen");
 const startBtn = document.getElementById("start-btn");
-const endScreen = document.getElementById("end-screen");
-const restartBtn = document.getElementById("restart-btn");
+const endScreenBad = document.getElementById("end-screen-bad");
+const endScreenGood = document.getElementById("end-screen-good");
+const restartBtnGood = document.getElementById("restart-btn-good");
+const restartBtnBad = document.getElementById("restart-btn-bad");
 const canvas = document.querySelector("canvas");
 const ctrlsBtn = document.getElementById("ctrls-btn");
 const controlsPopUp = document.getElementById("controls");
@@ -86,8 +88,21 @@ function musicPlayer() {
     }
 }
 
+function endMusic() {
+    if (!playMusic) {
+        bgm.pause();
+    }
+}
 
-restartBtn.addEventListener("click", () => {
+restartBtnGood.addEventListener("click", () => {
+    clickSound.currentTime = 0;
+    clickSound.play();
+
+    setTimeout(() => {
+        window.location.reload();
+    }, 150);
+});
+restartBtnBad.addEventListener("click", () => {
     clickSound.currentTime = 0;
     clickSound.play();
 
@@ -138,7 +153,7 @@ async function startGame() {
     const gameDuration = 5000; // end game after 60 seconds
 
     // Music player
-    // musicPlayer();
+    musicPlayer();
     
     // Initialize renderer
     const renderer = new LambertRenderer(canvas);
@@ -496,10 +511,19 @@ for (const entity of scene) {
             return;
         }
 
-        elapsedTime += dt;
+        /*elapsedTime += dt;
         if (elapsedTime >= gameDuration) {
             endGame();
             return;
+        }*/
+
+        let shouldEndGame = window.hudManager.getEndGame();
+        if (shouldEndGame > 0) {
+            if (shouldEndGame == 1) {
+                endGame1();
+            } else if (shouldEndGame == 2) {
+                endGame2();
+            }
         }
 
         for (const entity of scene) {
@@ -534,5 +558,30 @@ for (const entity of scene) {
     updateSystem = new UpdateSystem({ update, render });
     new ResizeSystem({ canvas, resize }).start();
     updateSystem.start();
+
+// ----------------------------------------------------------------------------------
+// Begin dialogue at game start
+
+    window.hudManager.setDialogueId(1);
+    window.dialogueMaster.inputReader(1);
+    
+
+// ----------------------------------------------------------------------------------
+// End Game
+
+function endGame1() { // Good ending
+    endMusic();
+    gameEnded = true;
+    startScreen.style.display = "none";   
+    canvas.style.display = "none";
+    endScreenGood.style.display = "flex";
+}
+function endGame2() { // Bad ending
+    endMusic();
+    gameEnded = true;
+    startScreen.style.display = "none";   
+    canvas.style.display = "none";
+    endScreenBad.style.display = "flex";
+}
 }
 
