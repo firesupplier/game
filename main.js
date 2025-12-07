@@ -293,12 +293,12 @@ kocka.aabb = {
 scene.push(kocka);*/
 
 // Cirkev
-const curchMesh = await loaderOBJ.load(new URL('./assets/models/cirkvica2.obj', import.meta.url));
+const curchMesh = await loaderOBJ.load(new URL('./assets/models/curch3.obj', import.meta.url));
 const curchTekstura = await loaderImage.load(new URL('./assets/models/tekstura.png', import.meta.url));
 
 const curch = new Entity();
 curch.addComponent(new Transform({
-    translation: [5, 1, -7],  // dx - levo desno, y gor dol, z naprej nazaj
+    translation: [5, 1, 2],  // dx - levo desno, y gor dol, z naprej nazaj
     scale: [2, 2, 2],
 
 }));
