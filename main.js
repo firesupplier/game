@@ -192,18 +192,18 @@ async function startGame() {
     // second light
     const light2 = new Entity();
     light2.addComponent(new Light({
-        color: [0, 20/255, 220/255], // convert to 0–1
+        color: [0, 20/255, 100/255], // convert to 0–1
         direction: [50, 10, -0.5],
         blinking: false,
-        baseColor: [0, 20/255, 220/255],
+        baseColor: [0, 220/255, 20/255],
         }));
     scene.push(light2);
 
     // third light, blinking
     const light3 = new Entity();
     light3.addComponent(new Light({
-        color: [20/255, 20/255, 220/255],
-        direction: [5, 40, -0.5],
+        color: [0/255, 100/255, 0/255],
+        direction: [10, 40, -0.5],
         blinking: true,
         baseColor: [20/255, 20/255, 220/255]
     }));
@@ -410,12 +410,12 @@ kocka.aabb = {
 scene.push(kocka);*/
 
 // Cirkev
-const curchMesh = await loaderOBJ.load(new URL('./assets/models/cirkvica2.obj', import.meta.url));
+const curchMesh = await loaderOBJ.load(new URL('./assets/models/curch3.obj', import.meta.url));
 const curchTekstura = await loaderImage.load(new URL('./assets/models/tekstura.png', import.meta.url));
 
 const curch = new Entity();
 curch.addComponent(new Transform({
-    translation: [5, 1, -7],  // dx - levo desno, y gor dol, z naprej nazaj
+    translation: [5, 1, 2],  // dx - levo desno, y gor dol, z naprej nazaj
     scale: [2, 2, 2],
 
 }));
@@ -468,7 +468,7 @@ well.aabb = {
 scene.push(well);
 
 // Tall bajta
-const tallMesh = await loaderOBJ.load(new URL('./assets/models/tall.obj', import.meta.url));
+const tallMesh = await loaderOBJ.load(new URL('./assets/models/tall2.obj', import.meta.url));
 const tallTekstura = await loaderImage.load(new URL('./assets/models/tekstura.png', import.meta.url));
 
 const tall = new Entity();
@@ -497,12 +497,12 @@ tall.aabb = {
 scene.push(tall);
 
 //mini bajta
-const miniMesh = await loaderOBJ.load(new URL('./assets/models/mini.obj', import.meta.url));
+const miniMesh = await loaderOBJ.load(new URL('./assets/models/mini2.obj', import.meta.url));
 const miniTekstura = await loaderImage.load(new URL('./assets/models/tekstura.png', import.meta.url));
 
 const mini = new Entity();
 mini.addComponent(new Transform({
-    translation: [-4, 4, 1],
+    translation: [-4, 4, 4],
     scale: [3, 3, 3],
 
 }));
