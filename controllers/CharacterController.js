@@ -122,7 +122,7 @@ export class CharacterController {
         //console.log(transVerPosX, transVerPosY)
         for(let i = 0; i < this.entity.components[2].npcLocation.length; i++){
             var locationNPC = this.entity.components[2].npcLocation[i]
-            if(transVerPosX>locationNPC[0]-1.5 && transVerPosX<locationNPC[0]+1.5 && transVerPosY>locationNPC[2]-1.5&&transVerPosY<locationNPC[2]+1.5){
+            if(transVerPosX>locationNPC[0]-3 && transVerPosX<locationNPC[0]+3 && transVerPosY>locationNPC[2]-3&&transVerPosY<locationNPC[2]+3){
                 //this.entity.components[2].isNearNPC[i] = true;
                 window.hudManager.setNPCLocation(i, true);
             } else {
