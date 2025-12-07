@@ -71,6 +71,7 @@ export class Physics {
             } else if(isColliding && b.getComponentOfType(Pickup)) {
                 b.components[2] = true;
                 a.components[2].pickups[0] = true;
+                //console.log(a.components[2].pickups[0]);
                 b.components[0].translation[1] = -10;
                 return;
             } else {

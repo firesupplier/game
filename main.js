@@ -124,13 +124,13 @@ gameCtrlsBtn.addEventListener("click", () => {
 let gameEnded = false;
 let updateSystem;
 
-function endGame() {
+/*function endGame() {
     musicPlayer();
     gameEnded = true;
     startScreen.style.display = "none";   
     canvas.style.display = "none";
     endScreen.style.display = "flex";
-}
+}*/
 
 // game start
 async function startGame() {
