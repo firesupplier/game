@@ -15,8 +15,8 @@ export class Character {
             [-22.42, 0, -4.46], // Mermaid
 
             [8.69, 0, -1.22], // Root Extract
-            [-2.68, 0, -0.82], // Diver Fish
-            [-2.68, 0, -4.49], // Scarfish
+            [-7.68, 2, -5.49], // Diver Fish
+            [-2.68, 2, -5.49], // Scarfish
         ],
         isNearNPC = [false, false, false, false, false, false, false, false],
     } = {}) {
