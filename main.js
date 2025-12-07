@@ -582,6 +582,32 @@ boardwalk.addComponent(new Model({
 }));
 scene.push(boardwalk);
 
+
+// zvezde
+const zvezdeMesh = await loaderOBJ.load(new URL('./assets/models/zvezde.obj', import.meta.url));
+const zvezdeTekstura = await loaderImage.load(new URL('./assets/models/tekstura.png', import.meta.url));
+
+const zvezde = new Entity();
+zvezde.addComponent(new Transform({
+    translation: [-13, -10, 20], // globina je y
+    scale: [13, 13, 13],
+
+}));
+zvezde.addComponent(new Model({
+    primitives: [
+        new Primitive({
+            mesh: zvezdeMesh,
+            material: new Material({
+                baseTexture: new Texture({
+                    image: zvezdeTekstura,
+                    sampler: new Sampler,
+                })
+            })
+        })
+    ]
+}));
+scene.push(zvezde);
+
 //Meje
 const mejaTekstura = await loaderImage.load(new URL('./assets/models/mejatekstura.png', import.meta.url));
 const mejaSpredaj = new Entity();
