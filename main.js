@@ -222,7 +222,6 @@ async function startGame() {
     character.addComponent(new CharacterController(character, canvas, camera));
     scene.push(character);
 
-    // console.log(character.components[1].primitives[0].mesh.vertices[0].position);
 
 const kockaMesh = await loaderOBJ.load(new URL('./assets/models/kocka.obj', import.meta.url));
 const kockaTekstura = await loaderImage.load(new URL('./assets/models/tekstura.png', import.meta.url));
@@ -452,12 +451,12 @@ scene.push(boardwalk);
 
 //Meje
 const mejaTekstura = await loaderImage.load(new URL('./assets/models/mejatekstura.png', import.meta.url));
-const meja = new Entity();
-meja.addComponent(new Transform({
-    translation: [0, -0.7, -8.5],
-    scale: [50, 1, 1],
+const mejaSpredaj = new Entity();
+mejaSpredaj.addComponent(new Transform({
+    translation: [0, 2, -8],
+    scale: [30, 1, 1],
 }));
-meja.addComponent(new Model({
+mejaSpredaj.addComponent(new Model({
     primitives: [
         new Primitive({
             mesh: kockaMesh,
@@ -470,12 +469,83 @@ meja.addComponent(new Model({
         })
     ]
 }));
-meja.aabb = {
+mejaSpredaj.aabb = {
     min: [-0.2, -0.2, -0.2],
     max: [0.2, 0.2, 0.2],
 };
-scene.push(meja);
+scene.push(mejaSpredaj);
 
+const mejaLevo = new Entity();
+mejaLevo.addComponent(new Transform({
+    translation: [23, 4, -3],
+    scale: [1, 1, 5],
+}));
+mejaLevo.addComponent(new Model({
+    primitives: [
+        new Primitive({
+            mesh: kockaMesh,
+            material: new Material({
+                baseTexture: new Texture({
+                    image: mejaTekstura,
+                    sampler: new Sampler,
+                })
+            })
+        })
+    ]
+}));
+mejaLevo.aabb = {
+    min: [-0.2, -0.2, -0.2],
+    max: [0.2, 0.2, 0.2],
+};
+scene.push(mejaLevo);
+
+const mejaZadaj1 = new Entity();
+mejaZadaj1.addComponent(new Transform({
+    translation: [-0.5, 2, 7],
+    scale: [0.5, 1, 5],
+}));
+mejaZadaj1.addComponent(new Model({
+    primitives: [
+        new Primitive({
+            mesh: kockaMesh,
+            material: new Material({
+                baseTexture: new Texture({
+                    image: mejaTekstura,
+                    sampler: new Sampler,
+                })
+            })
+        })
+    ]
+}));
+mejaZadaj1.aabb = {
+    min: [-0.2, -0.2, -0.2],
+    max: [0.2, 0.2, 0.2],
+};
+scene.push(mejaZadaj1);
+
+const mejaZadaj2 = new Entity();
+mejaZadaj2.addComponent(new Transform({
+    translation: [-10, 2, 7],
+    scale: [2, 1, 5],
+}));
+mejaZadaj2.addComponent(new Model({
+    primitives: [
+        new Primitive({
+            mesh: kockaMesh,
+            material: new Material({
+                baseTexture: new Texture({
+                    image: mejaTekstura,
+                    sampler: new Sampler,
+                })
+            })
+        })
+    ]
+}));
+mejaZadaj2.aabb = {
+    min: [-0.2, -0.2, -0.2],
+    max: [0.2, 0.2, 0.2],
+};
+scene.push(mejaZadaj2);
 
 const physics = new Physics(scene);
 for (const entity of scene) {
@@ -487,6 +557,30 @@ for (const entity of scene) {
     const boxes = model.primitives.map(primitive => calculateAxisAlignedBoundingBox(primitive.mesh));
     entity.aabb = mergeAxisAlignedBoundingBoxes(boxes);
 }
+
+const mejaDesno = new Entity();
+mejaDesno.addComponent(new Transform({
+    translation: [-30, 0, -3],
+    scale: [1, 10, 50],
+}));
+mejaDesno.addComponent(new Model({
+    primitives: [
+        new Primitive({
+            mesh: kockaMesh,
+            material: new Material({
+                baseTexture: new Texture({
+                    image: mejaTekstura,
+                    sampler: new Sampler,
+                })
+            })
+        })
+    ]
+}));
+mejaDesno.aabb = {
+    min: [-0.2, -0.2, -0.2],
+    max: [0.2, 0.2, 0.2],
+};
+scene.push(mejaDesno);
 
     // Update loop
     function update(t, dt) {
