@@ -198,11 +198,12 @@ async function startGame() {
     const loaderOBJ = new OBJLoader();
     const loaderImage = new ImageLoader();
 
-    const characterMesh = await loaderOBJ.load(new URL('./assets/models/placeholder_character/placeholder_character.obj', import.meta.url));
-    const characterTekstura = await loaderImage.load(new URL('./assets/models/placeholder_character/lik_telo.png', import.meta.url));
+    const characterMesh = await loaderOBJ.load(new URL('./assets/models/mc2.obj', import.meta.url));
+    const characterTekstura = await loaderImage.load(new URL('./assets/models/tekstura.png', import.meta.url));
     const character = new Entity();
     character.addComponent(new Transform({
         translation: [0, 0, -5],
+        scale: [0.3, 0.3, 0.3],
     }));
     character.addComponent(new Model({
         primitives: [
