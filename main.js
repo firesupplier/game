@@ -469,7 +469,7 @@ scene.push(boardwalk);
 const mejaTekstura = await loaderImage.load(new URL('./assets/models/mejatekstura.png', import.meta.url));
 const mejaSpredaj = new Entity();
 mejaSpredaj.addComponent(new Transform({
-    translation: [0, 2, -8],
+    translation: [0, 1.8, -8.2],
     scale: [30, 1, 1],
 }));
 mejaSpredaj.addComponent(new Model({
